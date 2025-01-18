@@ -26,3 +26,6 @@ class Solution {
         return new int[]{};
     }
 }
+
+//Time Complexity: O(n)
+//Space Complexity: O(1)
