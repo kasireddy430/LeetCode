@@ -13,7 +13,8 @@ class Solution {
             for(int c = 0; c < COLS; c++){
                 //Check if the cell is an island
                 if(grid[r][c] == 1){
-                    maxArea = Math.max(maxArea, visitIsland(grid, r, c)); //Mark the cell visited
+                    //Mark the cell visited and calculate area
+                    maxArea = Math.max(maxArea, visitIsland(grid, r, c)); 
                 }
             }
         }
