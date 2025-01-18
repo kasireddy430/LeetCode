@@ -3,11 +3,11 @@ class Solution {
         //Initilize a variable to store the result
         List<List<Integer>> triplets = new ArrayList<>();
 
-        // //Check if the input array is empty
-        // if(nums.length == 0){
-        //     //If so return empty list
-        //     return triplets;
-        // }
+        //Check if the input array is empty
+        if(nums.length == 0){
+            //If so return empty list
+            return triplets;
+        }
 
         //Sort the input array before retrieving the triplets satifying the underlying conditions
         Arrays.sort(nums);
