@@ -21,6 +21,7 @@ class Solution {
             prev = head; //Move the prev pointer to current node
             head = next; //Move the current node to the next node
         }
+        //return the head of reversed list
         return prev;
     }
 }
