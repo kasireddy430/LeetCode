@@ -1,35 +1,40 @@
 class KthLargest {
-    //Priority queue to store k largets elements
-    private PriorityQueue<Integer> minHeap;
+    //Create a priorityQueue to store k largest elements
+    PriorityQueue<Integer> minHeap;
     private int k;
 
-    //Initilize constructor with k and populate minheap with the input array values
+    //Constructor to initialize the object with k and the stream of test scores nums. 
     public KthLargest(int k, int[] nums) {
         this.k = k;
         this.minHeap = new PriorityQueue<>();
 
-        for(int num : nums){
-            //Add elements from input array to the stream
+        //iterate over input array and add them to priorityQueue
+        for(int num:nums){
             minHeap.offer(num);
 
-            //Check if the minHeap exceeds the k
+            //Check if minHeap size exceeds k value
             if(minHeap.size() > k){
-                //If so remove the smallest element from the heap
+                //If so, remove the smallest element from minHeap.
+                //Such that minHeap store k largest elements.
                 minHeap.poll();
             }
         }
     }
-    
-    //Method to add the provided input value and remove the smallest element from the stream
+
+    //Method to add the given value to priorityQueue and
+    //return kth largest element
     public int add(int val) {
         minHeap.offer(val);
 
+        //Check if minHeap exceeds the threshold
         if(minHeap.size() > k){
+            //If so remove the smallest element
+            //Such that minHeap stores k largest elements even after adding a new value to stream
             minHeap.poll();
         }
 
-        //return the kth larget element if the stream isn't empty
-        return minHeap.isEmpty()?0:minHeap.peek();
+        //return the kth largest element
+        return minHeap.peek();
     }
 }
 
