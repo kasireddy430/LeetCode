@@ -1,54 +1,60 @@
 class Solution {
     public int orangesRotting(int[][] grid) {
-        //Create a queue to store the coordinates of the rotten oranges
-        Queue<int[]> q = new LinkedList<>();
-
-        //Initialize variables to track fresh oranges and the time
+        //Create a queue to store the co-ordinates of the rotten oranges
+        Queue<int[]> queue = new LinkedList<>();
+        //Initialize fresh variable for tracking fresh oranges across the grid
         int fresh = 0;
         int time = 0;
 
         //Iterate over each cell
-        for(int r = 0; r < grid.length; r++){
-            for(int c =0; c < grid[0].length; c++){
-                //Check if the cell holds the fresh fruit
-                if(grid[r][c] == 1){
-                    fresh++;
+        for(int i = 0; i < grid.length; i++){
+            for(int j = 0; j < grid[0].length; j++){
+                //Check if the cell has rotten orange
+                if(grid[i][j] == 2){
+                    //If so add it to the queue
+                    queue.offer(new int[]{i, j});
                 }
 
-                //Add co-ordinates of rotten oranges to queue
-                if(grid[r][c] == 2){
-                    q.offer(new int[]{r, c});
+                //If the cell has fresh fruit, increment the fresh count
+                if(grid[i][j] == 1){
+                    fresh++;
                 }
             }
         }
 
-        //Define directions for the adjacent cells
-        int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+        //for tracking the adjacent cells
+        int[][] directions = {{1,0}, {-1, 0}, {0, 1}, {0, -1}};
 
-        //Iterate until no fresh fruits are left and queue is empty
-        while(fresh > 0 && !q.isEmpty()){
-            int size = q.size();
+        //Iterate over the queue until it's empty and has no fresh fruits
+        while(fresh > 0 && !queue.isEmpty()){
+            int length = queue.size();
 
-            for(int i = 0; i < size; i++){
-                int[] current = q.poll();
+            //Process all rotten oranges at same time
+            for(int i = 0; i < length; i++){
+                int[] current = queue.poll();
                 int row = current[0];
                 int col = current[1];
 
                 for(int[] dir:directions){
-                    int r = row + dir[0];
-                    int c = col + dir[1];
+                    int r = dir[0] + row;
+                    int c = dir[1] + col;
 
-                    if(r >= 0 && r < grid.length && c >= 0 && c < grid[0].length && grid[r][c] == 1 ){
-                        grid[r][c] = 2;
-                        q.offer(new int[]{r, c});
+                    //If the adjacent cells are valid and has a frsh fruit
+                    //add it to the queue and make it rotten.
+                    //Decrease the fresh count
+                    if(r >=0 && r < grid.length && c >= 0 && c < grid[0].length && grid[r][c]==1){
                         fresh--;
+                        grid[r][c] = 2;
+                        queue.offer(new int[]{r, c});
                     }
-
                 }
+
             }
             time++;
         }
-        return fresh == 0 ? time : -1;
+
+        //return time taken for rotting all the oranges if it doesn't have any fresh fruits
+        return fresh == 0?time:-1;
     }
 }
 
