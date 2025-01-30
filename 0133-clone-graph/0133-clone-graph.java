@@ -30,7 +30,7 @@ class Solution {
         //Create queue to perform BFS traversal
         Queue<Node> q = new LinkedList<>();
 
-        //Clone the 1st node and enqueue it
+        //Clone the 1st node and enqueue original node
         oldToNew.put(node, new Node(node.val));
         q.offer(node);
 
