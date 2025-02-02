@@ -1,28 +1,28 @@
 class Solution {
     public int lastStoneWeight(int[] stones) {
-        //Create a priorityqueue to hold stone weights in descending order
+        //Create a priorityQueue to store stone weights in descending order
         PriorityQueue<Integer> maxHeap = new PriorityQueue<>((a, b) -> b - a);
 
-        //Iterate over input array and populate priority queue
-        for(int stone:stones){
+        //Iterate over input array and populate queue with input elements
+        for(int stone : stones){
             maxHeap.offer(stone);
         }
 
-        //simulate breaking the stones
+        //Iterate until maxHeap has more than one element in it
         while(maxHeap.size() > 1){
-            //Destroy the heaviest two stones
-            int first = maxHeap.poll();
-            int second = maxHeap.poll();
+            //Retrive top two elements from queue
+            int firstStone = maxHeap.poll();
+            int secondStone = maxHeap.poll();
 
-            //Check if the weights of both the stones are same
-            if(first != second){
-                //if not, add a new weight 
-                maxHeap.offer(first - second);
+            //Check if both weights are same or not
+            if(firstStone != secondStone){
+                //If not same, calculate difference weight and add it to the queue
+                maxHeap.offer(firstStone - secondStone);
             }
         }
 
-        //returnthe last stone weight if the queue is not empty
-        return maxHeap.isEmpty()?0:maxHeap.peek();
+        //If the queue isn't empty return the sole remaining element. If not, return 0.
+        return maxHeap.isEmpty()? 0 : maxHeap.peek();
     }
 }
 
