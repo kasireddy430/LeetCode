@@ -1,6 +1,6 @@
 class Solution {
     public int reverse(int x) {
-        //Define constants for minimum and maximum values
+        //Define constants for minimum and maximum integer values
         int MAX = Integer.MAX_VALUE;
         int MIN = Integer.MIN_VALUE;
 
