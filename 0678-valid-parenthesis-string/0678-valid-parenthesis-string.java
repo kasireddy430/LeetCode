@@ -12,8 +12,8 @@ class Solution {
                 leftMin--;
                 leftMax--;
             } else{//If it's a star it can be either '(' or ')'
-                leftMin--;//Star as '('
-                leftMax++;//star as ')'
+                leftMin--;//Star as ')'
+                leftMax++;//star as '('
             }
 
             if(leftMax < 0){ //Indicates number of closed parenthesis is greater than open paranthesis
