@@ -34,5 +34,5 @@ class Solution {
     }
 }
 
-//Time Complexity: O(n log n)
+//Time Complexity: O(n log n). Contributed by insertions into treeMap
 //Space Complexity: O(n)
