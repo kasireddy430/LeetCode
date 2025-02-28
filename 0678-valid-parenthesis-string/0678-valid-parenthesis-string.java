@@ -16,16 +16,18 @@ class Solution {
                 leftMax++;//star as ')'
             }
 
-        if(leftMax < 0){ //Indicates number of closed parenthesis is greater than open paranthesis
-            return false;
+            if(leftMax < 0){ //Indicates number of closed parenthesis is greater than open paranthesis
+                return false;
+            }
+
+            //Number of open paranthesis cannot be negative, reset the min variable to 0
+            if(leftMin < 0){
+                leftMin = 0; 
+            }
+
         }
 
-        //Number of open paranthesis cannot be negative, reset the min variable to 0
-        if(leftMin < 0){
-            leftMin = 0; 
-        }
-
-        }
+        //If leftMin equals 0, it implies string is valid meaning all parenthesis are valid
         return leftMin == 0;
     }
 }
