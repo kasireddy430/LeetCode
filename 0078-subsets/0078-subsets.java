@@ -13,14 +13,14 @@ class Solution {
             return;
         }
 
-        //Inculde current element and recurr to next index
+        //Inculde current element and recurr with next index
         subset.add(nums[i]);
         dfs(nums, i + 1, subset, result);
-        //Exculde current element and recurr to next index
+        //Exculde current element and recurr with next index
         subset.remove(subset.size() - 1);
         dfs(nums, i + 1, subset, result);
     }
 }
 
 //Time Complexity: O(n * 2^n)
-//Space Complexity: O(n)
+//Space Complexity: O(n * 2^n) due to result list
