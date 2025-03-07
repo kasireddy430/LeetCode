@@ -36,6 +36,6 @@ class Solution {
     }
 }
 
-//Time COmplexity: O(2^t/m)
+//Time Complexity: O(2^t/m)
 //Space Complexity: O(t/m)
 //where t is target value and m is smallest element in input array
