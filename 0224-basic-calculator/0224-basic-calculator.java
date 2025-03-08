@@ -12,7 +12,7 @@ class Solution {
 
             //Case 1: If character is digit add it to the operand
             if(Character.isDigit(c)){
-                operand = (operand * 10) + (int)(c - '0');
+                operand = (operand * 10) + (c - '0');
             } //Case 2: If character is '+' add ongoing operand to result and reset operand
             else if(c == '+'){
                 result += sign * operand;
@@ -39,6 +39,7 @@ class Solution {
                 sign = 1;
             }
         }
+
         //Add final operand to the result and return(handles when last character is operand)
         return result + (sign * operand);
     }
