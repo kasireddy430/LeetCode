@@ -5,13 +5,14 @@ class Solution {
             return 0;
         }
 
+        int length = s.length() - 1;
         int currentNumber = 0; //stores current number being processed(for handling multi-digit)
         int lastNumber = 0;//stores last number processed
         int result = 0;//stores final computed result
         char operator = '+';//stores last operator encountered(starting with +)
 
         //Iterate over each character in input array
-        for(int i = 0; i < s.length(); i++){
+        for(int i = 0; i <= length; i++){
             char c = s.charAt(i);
             //Check if character is digit
             if(Character.isDigit(c)){
@@ -19,7 +20,7 @@ class Solution {
             } 
             
             //Check if character is operator or the end of the string
-            if(!Character.isDigit(c) && !Character.isWhitespace(c) || i == s.length() - 1){
+            if(!Character.isDigit(c) && !Character.isWhitespace(c) || i == length){
                 //if previous operator is + or - then add previously processed number to result
                 //and update lastNumber based on the previous operator
                 if(operator == '+' || operator == '-'){
