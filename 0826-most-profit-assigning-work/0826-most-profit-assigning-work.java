@@ -1,28 +1,36 @@
 class Solution {
     public int maxProfitAssignment(int[] difficulty, int[] profit, int[] worker) {
-        int maxDifficulty = 0;
-        for (int d : difficulty) {
-            maxDifficulty = Math.max(maxDifficulty, d);
+        //Find maximum difficulty job
+        int maxAbility = 0;
+        for(int i = 0; i < difficulty.length; i++){
+            maxAbility = Math.max(maxAbility, difficulty[i]);
         }
 
-        int[] maxProfitUpToDifficulty = new int[maxDifficulty + 1];
-        for (int i = 0; i < difficulty.length; i++) {
-            maxProfitUpToDifficulty[difficulty[i]] = Math.max(maxProfitUpToDifficulty[difficulty[i]], profit[i]);
+        //Create a look-up to store profites for each difficulty level's
+        int[] maxDifficultyProfit = new int[maxAbility + 1];
+        for(int i = 0; i < difficulty.length; i++){
+            maxDifficultyProfit[difficulty[i]] = Math.max(maxDifficultyProfit[difficulty[i]], profit[i]);
         }
 
-        for (int i = 1; i <= maxDifficulty; i++) {
-            maxProfitUpToDifficulty[i] = Math.max(maxProfitUpToDifficulty[i], maxProfitUpToDifficulty[i - 1]);
+        //Compute max profit for each difficulty level
+        for(int i = 1; i <= maxAbility; i++){
+             maxDifficultyProfit[i] = Math.max(maxDifficultyProfit[i], maxDifficultyProfit[i - 1]);
         }
 
-        int totalProfit = 0;
-        for (int ability : worker) {
-            if (ability > maxDifficulty) {
-                totalProfit += maxProfitUpToDifficulty[maxDifficulty];
-            } else {
-                totalProfit += maxProfitUpToDifficulty[ability];
+        //assign profitable job to each worker
+        int result = 0;
+        for(int ability : worker){
+            if(ability > maxAbility){
+                result += maxDifficultyProfit[maxAbility];
+            } else{
+                result += maxDifficultyProfit[ability];
             }
         }
 
-        return totalProfit;
+        return result;//return max profit
     }
 }
+
+
+//Time Complexity: O(m * n * maxAbility). where m = difficulty.length and n = worker.length
+//Space Complexity: O(maxAbility)
