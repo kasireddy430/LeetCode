@@ -26,7 +26,7 @@ class Solution {
             return false;
         }
 
-        //Check if swapping indices fixes mismatch
+        //Check if swap is possible
         return s1.charAt(firstIndex) == s2.charAt(secondIndex) &&
             s1.charAt(secondIndex) == s2.charAt(firstIndex); 
     }
