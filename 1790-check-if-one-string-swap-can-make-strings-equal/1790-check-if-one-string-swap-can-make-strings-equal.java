@@ -1,8 +1,8 @@
 class Solution {
     public boolean areAlmostEqual(String s1, String s2) {
-        //If both string are identical, check for duplicates
+        //If both string are identical, no swap required for strings to be equal
         if(s1.equals(s2)){
-            return true;//if no duplicates found, then they aren't buddy strings
+            return true;
         }
 
         //If both strings differ, check if it has two indices different
@@ -16,12 +16,12 @@ class Solution {
                 } else if (secondIndex == -1){
                     secondIndex = i;
                 } else{
-                    return false;//morethan two mismatches found, can't be buddy strings
+                    return false;//morethan two mismatches found, can't become equal with 1-swap
                 }
             }
         }
 
-        //If only one mismatch found in indices, then they can't be buddy strings
+        //If only one mismatch found in indices, then swaping doesn't work
         if(secondIndex == -1){
             return false;
         }
@@ -31,3 +31,6 @@ class Solution {
             s1.charAt(secondIndex) == s2.charAt(firstIndex); 
     }
 }
+
+//Time Complexity: O(n)
+//Space Complexity: O(1)
