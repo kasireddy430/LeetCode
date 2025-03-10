@@ -30,7 +30,7 @@ class Solution {
     Queue<Pair<TreeNode, Integer>> q = new LinkedList<>();
     //Enqueue rootnode with 0 as column index
     q.offer(new Pair(root, 0));
-    int minColumn = Integer.MAX_VALUE, maxColumn = Integer.MIN_VALUE;
+    int minColumn = 0, maxColumn = 0;
 
     //Iterate until queue becomes empty
     while(!q.isEmpty()){
