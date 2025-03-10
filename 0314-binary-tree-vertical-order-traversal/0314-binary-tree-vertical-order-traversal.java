@@ -15,41 +15,58 @@
  */
 class Solution {
   public List<List<Integer>> verticalOrder(TreeNode root) {
-    List<List<Integer>> output = new ArrayList();
-    if (root == null) {
-      return output;
+    List<List<Integer>> result = new ArrayList<>();
+
+    //If root is null, return empty list
+    if(root == null){
+        return result;
     }
 
-    Map<Integer, ArrayList> columnTable = new HashMap();
-    // Pair of node and its column offset
-    Queue<Pair<TreeNode, Integer>> queue = new ArrayDeque();
-    int column = 0;
-    queue.offer(new Pair(root, column));
+    //Map to store list of node's value's with their column index as key
+    Map<Integer, List> columnTable  = new HashMap<>();
 
-    int minColumn = 0, maxColumn = 0;
+    //Queue for BFS traversal
+    //It holds pairs of nodes and their indices
+    Queue<Pair<TreeNode, Integer>> q = new LinkedList<>();
+    //Enqueue rootnode with 0 as column index
+    q.offer(new Pair(root, 0));
+    int minColumn = Integer.MAX_VALUE, maxColumn = Integer.MIN_VALUE;
 
-    while (!queue.isEmpty()) {
-      Pair<TreeNode, Integer> p = queue.poll();
-      root = p.getKey();
-      column = p.getValue();
+    //Iterate until queue becomes empty
+    while(!q.isEmpty()){
+        //Dequeue from queue
+        Pair<TreeNode, Integer> p = q.poll();
 
-      if (root != null) {
-        if (!columnTable.containsKey(column)) {
-          columnTable.put(column, new ArrayList<Integer>());
+        int column = p.getValue();
+        root = p.getKey();
+
+        if(root != null){
+            //If current node's index is not part of map, add an entry
+            if(!columnTable.containsKey(column)){
+                columnTable.put(column, new ArrayList<>());
+            }
+
+            //Update column table with node's values
+            columnTable.get(column).add(root.val);
+
+            //Update column range
+            minColumn = Math.min(minColumn, column);
+            maxColumn = Math.max(maxColumn, column);
+
+            //Add child node along with updated column indices
+            q.offer(new Pair(root.left, column - 1));
+            q.offer(new Pair(root.right, column + 1));
         }
-        columnTable.get(column).add(root.val);
-        minColumn = Math.min(minColumn, column);
-        maxColumn = Math.max(maxColumn, column);
-
-        queue.offer(new Pair(root.left, column - 1));
-        queue.offer(new Pair(root.right, column + 1));
-      }
     }
 
-    for(int i = minColumn; i < maxColumn + 1; ++i) {
-      output.add(columnTable.get(i));
+    //Iterate throup map and populate result list
+    for(int i = minColumn; i <= maxColumn; i++){
+        result.add(columnTable.get(i));
     }
 
-    return output;
+    return result;
   }
 }
+
+//Time Complexity: O(n)
+//Space Complexity: O(n)
