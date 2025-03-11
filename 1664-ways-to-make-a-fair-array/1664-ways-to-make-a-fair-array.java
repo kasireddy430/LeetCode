@@ -1,13 +1,18 @@
 class Solution {
     public int waysToMakeFair(int[] A) {
-        int res = 0, n = A.length, left[] = new int[2], right[] = new int[2];
-        for (int i = 0; i < n; i++)
-            right[i%2] += A[i]; 
-        for (int i = 0; i < n; i++) {
-            right[i%2] -= A[i];
-            if (left[0]+right[1] == left[1]+right[0]) res++;
-            left[i%2] += A[i];
+        int n = A.length;
+        if (n < 2)
+            return n;
+        int prefix = 0, suffix = A[n - 1];
+        for (int i = n - 2; i >= 0; i--)
+            suffix = A[i] - suffix;
+        int ans = 0;
+        for (int num : A) {
+            suffix = num - suffix;
+            if (prefix == suffix)
+                ans++;
+            prefix = num - prefix;
         }
-        return res;
+        return ans;
     }
 }
