@@ -26,7 +26,7 @@ class Solution {
     }
 
     private void addNum(int num) {
-        if (!maxHeap.isEmpty() && maxHeap.peek() >= num) {
+        if (maxHeap.isEmpty() || maxHeap.peek() >= num) {
             maxHeap.offer(num);
             balance++;
         } else {
