@@ -6,7 +6,7 @@ class Solution {
         //Shrink window until k elements remain
         while (right - left >= k) {
             //Check for fathest element from x and move the pointer
-            if(Math.abs(left - x) > Math.abs(left - x)){
+            if(Math.abs(arr[left] - x) > Math.abs(arr[right] - x)){
                 left++;//Element at left pointer is farthest
             } else {
                 right--;
