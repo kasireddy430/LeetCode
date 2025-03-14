@@ -23,7 +23,7 @@ class Solution {
         }
 
         //Map to store list of node's value's with their column index as key
-        Map<Integer, List<Integer>> columnTable  = new HashMap<>();
+        Map<Integer, List> columnTable  = new HashMap<>();
 
         //Queue for BFS traversal
         //It holds pairs of nodes and their indices
