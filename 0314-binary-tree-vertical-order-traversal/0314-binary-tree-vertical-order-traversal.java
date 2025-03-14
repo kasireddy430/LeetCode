@@ -23,7 +23,7 @@ class Solution {
         }
 
         //Map to store list of node's value's with their column index as key
-        Map<Integer, List> columnTable  = new HashMap<>();
+        Map<Integer, List<Integer>> columnTable  = new HashMap<>();
 
         //Queue for BFS traversal
         //It holds pairs of nodes and their indices
@@ -42,9 +42,7 @@ class Solution {
 
             if(root != null){
                 //If current node's index is not part of map, add an entry
-                if(!columnTable.containsKey(column)){
-                    columnTable.put(column, new ArrayList<>());
-                }
+                columnTable.putIfAbsent(column, new ArrayList<>());
 
                 //Update column table with node's values
                 columnTable.get(column).add(root.val);
