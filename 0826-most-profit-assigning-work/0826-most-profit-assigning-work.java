@@ -14,7 +14,7 @@ class Solution {
 
         //Compute max profit for each difficulty level
         for(int i = 1; i <= maxAbility; i++){
-             maxDifficultyProfit[i] = Math.max(maxDifficultyProfit[i], maxDifficultyProfit[i - 1]);
+            maxDifficultyProfit[i] = Math.max(maxDifficultyProfit[i], maxDifficultyProfit[i - 1]);
         }
 
         //assign profitable job to each worker
@@ -32,5 +32,5 @@ class Solution {
 }
 
 
-//Time Complexity: O(m * n * maxAbility). where m = difficulty.length and n = worker.length
+//Time Complexity: O(m + n + maxAbility).
 //Space Complexity: O(maxAbility)
