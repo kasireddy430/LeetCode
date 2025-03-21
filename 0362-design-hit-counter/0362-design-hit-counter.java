@@ -1,23 +1,33 @@
 class HitCounter {
-
-    Queue<Integer> timeQueue;
+    private int[] times;
+    private int[] hits;
 
     public HitCounter() {
-        timeQueue = new LinkedList<>();
+        times = new int[300]; // Store timestamps
+        hits = new int[300];  // Store hits at each timestamp
     }
-    
+
     public void hit(int timestamp) {
-        timeQueue.add(timestamp);
-    }
-    
-    public int getHits(int timestamp) {
-        if(timestamp <= 300) {
-            return timeQueue.size();
+        int index = timestamp % 300;
+        if (times[index] != timestamp) {
+            times[index] = timestamp;
+            hits[index] = 1;
+        } else {
+            hits[index]++;
         }
-        while(!timeQueue.isEmpty() && timeQueue.peek() <= timestamp - 300) timeQueue.poll();
-        return timeQueue.size();
+    }
+
+    public int getHits(int timestamp) {
+        int totalHits = 0;
+        for (int i = 0; i < 300; i++) {
+            if (timestamp - times[i] < 300) {
+                totalHits += hits[i];
+            }
+        }
+        return totalHits;
     }
 }
+
 
 /**
  * Your HitCounter object will be instantiated and called as such:
