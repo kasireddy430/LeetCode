@@ -10,26 +10,31 @@
  */
 class Solution {
     public ListNode swapNodes(ListNode head, int k) {
-        int listLength = 0;
-        ListNode frontNode = null;
-        ListNode endNode = null;
-        ListNode currentNode = head;
-        // set the front node and end node in single pass
-        while (currentNode != null) {
-            listLength++;
-            if (endNode != null)
-                endNode = endNode.next;
-            // check if we have reached kth node
-            if (listLength == k) {
-                frontNode = currentNode;
-                endNode = head;
+        ListNode firstNode = null;
+        ListNode secondNode = null;
+        int length = 0;
+        ListNode curr = head;
+
+        while(curr != null){
+            length++;
+            if(secondNode != null){
+                secondNode = secondNode.next;
             }
-            currentNode = currentNode.next;
+
+            if(length == k){
+                firstNode = curr;
+                secondNode = head;
+            }
+            curr = curr.next;
         }
-        // swap the values of front node and end node
-        int temp = frontNode.val;
-        frontNode.val = endNode.val;
-        endNode.val = temp;
+
+        int tmp = firstNode.val;
+        firstNode.val = secondNode.val;
+        secondNode.val = tmp;
+
         return head;
     }
 }
+
+//Time Complexity: O(n)
+//Space Complexity: O(1)
