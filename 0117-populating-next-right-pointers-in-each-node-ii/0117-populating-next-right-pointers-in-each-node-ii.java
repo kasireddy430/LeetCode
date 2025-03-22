@@ -23,33 +23,37 @@ class Node {
 
 class Solution {
     public Node connect(Node root) {
-        if (root == null) return null;
+        if(root == null){
+            return null;
+        }
 
-        Node current = root;  // Current node at the level
-        Node dummy = new Node(0); // Dummy node to track the start of the next level
-        Node prev = dummy; // Pointer to build the next level
+        Node cur = root;
+        Node dummy = new Node(0);
+        Node prev = dummy;
 
-        while (current != null) {
-            // Process current level
-            if (current.left != null) {
-                prev.next = current.left;
-                prev = prev.next;
-            }
-            if (current.right != null) {
-                prev.next = current.right;
+        while(cur != null){
+            if(cur.left != null){
+                prev.next = cur.left;
                 prev = prev.next;
             }
 
-            // Move to the next node in the current level
-            current = current.next;
+            if(cur.right != null){
+                prev.next = cur.right;
+                prev = prev.next;
+            }
 
-            // If we reach the end of the level, move to the next level
-            if (current == null) {
-                current = dummy.next; // Move to the first node of the next level
-                dummy.next = null; // Reset the dummy node
-                prev = dummy; // Reset prev pointer
+            cur = cur.next;
+
+            if(cur == null){
+                cur = dummy.next;
+                dummy.next = null;
+                prev = dummy;
             }
         }
+
         return root;
     }
 }
+
+//Time Complexity: O(n)
+//Space Complexity: O(1)
