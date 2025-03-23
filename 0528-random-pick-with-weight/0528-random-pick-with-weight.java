@@ -1,23 +1,38 @@
 class Solution {
-        Queue<Integer> queue = new LinkedList<>();
-
-        public Solution(int[] w) {
-            int sum = 0;
-            
-            for (int num : w) sum += num;
-
-            for (int i = 0; i < w.length; i++) {
-                for (int j = 0; j < ((w[i]*100)/sum); j++) queue.add(i);
-            }
-        }
-
-        public int pickIndex() {
-            if(queue.isEmpty()) return 0;
-            int num = queue.poll();
-            queue.add(num);
-            return num;
+    int[] arr;
+    int sum = 0;
+    Random random = new Random();
+    public Solution(int[] w) {
+        arr = new int[w.length];
+        for (int i = 0; i < w.length; i++) {
+            sum += w[i];
+            arr[i] = sum;
         }
     }
+    
+    public int pickIndex() {
+        int target = random.nextInt(sum) + 1;
+        int l = 0, r = arr.length - 1;
+        int candidate = 0;
+        while (l <= r) {
+            int m = (l + r) / 2;
+            if (arr[m] < target) {
+                l = m + 1;
+            } else {
+                candidate = m;
+                r = m - 1;
+            }
+        }
+        return candidate;
+    }
+    //       
+    // w = [30, 20, 50]
+    //arr= [30, 50, 100]
+    //       m
+    // target = 40
+    // candidate = 1
+    // l = 0, r = 2
+}
 
 /**
  * Your Solution object will be instantiated and called as such:
