@@ -1,19 +1,25 @@
 class Solution {
     public int maximumLength(int[] nums, int k) {
-        Integer[][][] dp = new Integer[nums.length+1][k + 1][nums.length + 1];
-        return rec(nums,k,0,-1,dp);
-    }
-    public int rec(int[] nums,int k,int i,int prev,Integer dp[][][]){
-        if(i==nums.length)return dp[i][k][prev+1]= 0;
-        if(dp[i][k][prev+1] !=null)return dp[i][k][prev+1];
-        int take=0;
-        if (prev == -1 || nums[prev] == nums[i]) {            
-            take = 1 + rec(nums, k, i + 1, i,dp);
-        } else if (k > 0) {            
-            take = 1 + rec(nums, k - 1, i + 1, i,dp);
+        Map<Integer, int[]> dp = new HashMap<>();
+        int[] max = new int[k+2];
+
+        for(int num : nums){
+            int[] len = dp.get(num);
+
+            if(len == null){
+                len = new int[k+1];
+                dp.put(num, len);
+            }
+
+            for(int j = k; j>= 0;j--){
+                len[j] = Math.max(len[j], max[j]) + 1;
+                max[j + 1] = Math.max(max[j + 1], len[j]);
+            }
         }
-        
-        int ntake=rec(nums,k,i+1,prev,dp);
-        return dp[i][k][prev+1]= Math.max(take,ntake);
+
+        return max[k + 1];
     }
 }
+
+//Time Complexity: O(n * k)
+//Space Complexity: O(n * k)
