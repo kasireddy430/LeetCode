@@ -15,23 +15,30 @@
  */
 public class Solution {
     public boolean leafSimilar(TreeNode root1, TreeNode root2) {
-        List<Integer> leafValues1 = new ArrayList<>();
-        List<Integer> leafValues2 = new ArrayList<>();
-        
-        collectLeafValues(root1, leafValues1);
-        collectLeafValues(root2, leafValues2);
+        List<Integer> leafNodes1 = new ArrayList<>();
+        List<Integer> leafNodes2 = new ArrayList<>();
 
-        return leafValues1.equals(leafValues2);
+        calculateLeafNodes(root1, leafNodes1);
+        calculateLeafNodes(root2, leafNodes2);
+
+        return leafNodes1.equals(leafNodes2);
     }
 
-    private void collectLeafValues(TreeNode root, List<Integer> leafValues) {
-        if (root == null) {
+    private void calculateLeafNodes(TreeNode root, List<Integer> leafNodes){
+        if(root == null){
             return;
         }
-        if (root.left == null && root.right == null) {
-            leafValues.add(root.val);
+
+        if(root.left == null && root.right == null){
+            leafNodes.add(root.val);
+            return;
         }
-        collectLeafValues(root.left, leafValues);
-        collectLeafValues(root.right, leafValues);
+
+        calculateLeafNodes(root.left, leafNodes);
+        calculateLeafNodes(root.right, leafNodes);
     }
 }
+
+
+//Time Complexity: O(N). where is total number of nodes in both tree's
+//Space Complexity: O(N) worst case for skewed tree's 
