@@ -1,31 +1,46 @@
 class Solution {
-    int diffXY;
     public int minOperations(int[] nums, int x, int y) {
-        this.diffXY = x - y;
-        int left = 1, right = 0;
-        for (int num : nums)
-            right = Math.max(right, (num + y - 1) / y);
-        int res = right;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (check(nums, x, y, mid)) {
-                res = mid;
-                right = mid - 1;
-            } else {
-                left = mid + 1;
+        
+        int low = 0; 
+        int high = Integer.MIN_VALUE; 
+
+        for(int i=0; i < nums.length; i++)
+        {
+            high = Math.max(high, nums[i]);
+        }
+
+        int bestMid = -1;
+
+        while(low <= high)
+        {
+            int mid = low + (high - low)/2; 
+
+            if(isPossible(nums, x, y, mid))
+            {
+                bestMid = mid; 
+                high = mid-1;
+            }
+            else 
+            {   
+                low = mid+1;
             }
         }
-        return res;
+
+        return bestMid;
     }
-    public boolean check(int[] nums, int x, int y, int steps) {
-        int countX = steps;
-        for (int num : nums) {
-            int curSteps = (num + y - 1) / y;
-            if (curSteps > steps) {
-                countX -= (num - steps * y + diffXY - 1) / diffXY;
-                if (countX < 0) return false;
-            }
+
+    public boolean isPossible(int[] nums, int x, int y, int mid)
+    {
+        long diff = (long)((long)x - (long)y); 
+        long totalExtra= 0; 
+
+        for(int i=0; i < nums.length; i++)
+        {
+            long rem = ((long)nums[i] - ((long)y * mid));
+            if(rem <= 0) continue; 
+            totalExtra+= (long)Math.ceilDiv(rem, diff);
         }
-        return true;
+
+        return totalExtra <= mid;
     }
 }
