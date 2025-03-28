@@ -1,34 +1,31 @@
 class Solution {
+    int diffXY;
     public int minOperations(int[] nums, int x, int y) {
-        int max = Arrays.stream(nums).max().getAsInt();
-        
-        int l = 0, r = max;
-        while (l <= r) {
-            int m = l + r >> 1;
-            if (isPossible(nums, x, y, m)) {
-                r = m - 1;
+        this.diffXY = x - y;
+        int left = 1, right = 0;
+        for (int num : nums)
+            right = Math.max(right, (num + y - 1) / y);
+        int res = right;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (check(nums, x, y, mid)) {
+                res = mid;
+                right = mid - 1;
             } else {
-                l = m + 1;
+                left = mid + 1;
             }
         }
-        
-        return l;
+        return res;
     }
-    
-    private boolean isPossible(int[] nums, int x, int y, int m) {
-        long times = 0;
+    public boolean check(int[] nums, int x, int y, int steps) {
+        int countX = steps;
         for (int num : nums) {
-            long left = (long) num - (long)(m) * y;
-            if (left > 0) {
-                times += (left + x - y - 1) / (x - y);
+            int curSteps = (num + y - 1) / y;
+            if (curSteps > steps) {
+                countX -= (num - steps * y + diffXY - 1) / diffXY;
+                if (countX < 0) return false;
             }
         }
-        
-        return times <= m;
+        return true;
     }
 }
-
-//f, t
-//lm r
-//.   lrm
-//r
