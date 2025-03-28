@@ -1,31 +1,31 @@
 class Solution {
-    int diffXY;
     public int minOperations(int[] nums, int x, int y) {
-        this.diffXY = x - y;
-        int left = 1, right = 0;
-        for (int num : nums)
-            right = Math.max(right, (num + y - 1) / y);
-        int res = right;
+        int right = nums[0];
+        for (int v : nums) {
+            right = Math.max(v, right);
+        }
+        int left = 1;
+        right = right / y;
+        x -= y;
         while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (check(nums, x, y, mid)) {
-                res = mid;
+            int mid = (left + right) >> 1, s = mid;
+            for (int v : nums) {
+                int t = (v + y - 1) / y;
+                if (mid >= t) {
+                    continue;
+                }
+                s -= (v - mid * y + x - 1) / x;
+                if (s < 0) {
+                    break;
+                } 
+            }
+            if (s >= 0) {
                 right = mid - 1;
             } else {
                 left = mid + 1;
             }
         }
-        return res;
-    }
-    public boolean check(int[] nums, int x, int y, int steps) {
-        int countX = steps;
-        for (int num : nums) {
-            int curSteps = (num + y - 1) / y;
-            if (curSteps > steps) {
-                countX -= (num - steps * y + diffXY - 1) / diffXY;
-                if (countX < 0) return false;
-            }
-        }
-        return true;
+        return right + 1;
+        
     }
 }
