@@ -1,59 +1,65 @@
 class Solution {
-    private void dfs(HashMap<String,HashMap<String,Double>> gr, String src, String dst, double[] cur, double temp, HashSet<String> vis) {
-        if (vis.contains(src)) return; // \U0001f504 Avoid cycles
-        vis.add(src);
+    public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
+        HashMap<String, HashMap<String, Double>> gr = createGraph(equations, values);
 
-        if (src.equals(dst)) { // \U0001f3af Found target
-            cur[0] = temp;
+        int n = queries.size();
+        double[] cur = new double[n];
+
+        for(int i = 0; i < n; i++){
+            String src = queries.get(i).get(0);
+            String dst = queries.get(i).get(1);
+
+            if(!gr.containsKey(src) || !gr.containsKey(dst)){
+                cur[i] = -1.0;
+            } else {
+                HashSet<String> cycle = new HashSet<>();
+                double[] res = {-1.0};
+                double tmp = 1.0;
+                dfs(gr, src, dst, cycle, res, tmp);
+                cur[i] = res[0];
+            }
+        }
+        return cur;
+    }
+
+    private void dfs(HashMap<String, HashMap<String, Double>> gr, String src, String dst, HashSet<String> cycle, 
+                            double[] res, double tmp){
+        if(cycle.contains(src)) return;
+        cycle.add(src);
+
+        if(src.equals(dst)){
+            res[0] = tmp;
             return;
         }
 
-        for (Map.Entry<String, Double> edge : gr.get(src).entrySet()) { // \U0001f504 Visit neighbors
-            String curVal = edge.getKey();
-            double val = edge.getValue();
-            dfs(gr, curVal, dst, cur, temp * val, vis);
+        for(Map.Entry<String, Double> entry : gr.get(src).entrySet()){
+            String curVal = entry.getKey();
+            double edge = entry.getValue();
+
+            dfs(gr, curVal, dst, cycle, res, tmp * edge);
         }
     }
 
-    private HashMap<String, HashMap<String, Double>> createGraph(List<List<String>> equations, double[] values) {
-        HashMap<String, HashMap<String, Double>> gr = new HashMap<>();
+    private HashMap<String, HashMap<String, Double>> createGraph(List<List<String>> equations, double[] values){
         int n = equations.size();
+        HashMap<String, HashMap<String, Double>> gr = new HashMap<>();
 
-        for (int i = 0; i < n; i++) {
-            String src = equations.get(i).get(0);
+        for(int i = 0; i < n; i++){
+            String cur = equations.get(i).get(0);
             String dst = equations.get(i).get(1);
-            double ans = values[i];
+            double val = values[i];
 
-            gr.putIfAbsent(src, new HashMap<>());
+            gr.putIfAbsent(cur, new HashMap<>());
             gr.putIfAbsent(dst, new HashMap<>());
 
-            gr.get(src).put(dst, ans);         // ➗ Forward relation
-            gr.get(dst).put(src, 1.0 / ans);   // \U0001f504 Reverse relation
+            gr.get(cur).put(dst, val);
+            gr.get(dst).put(cur, 1.0/val);
         }
 
         return gr;
     }
-
-    public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
-        HashMap<String, HashMap<String, Double>> gr = createGraph(equations, values);
-        int n = queries.size();
-        double[] ans = new double[n];
-
-        for (int i = 0; i < n; i++) {
-            String src = queries.get(i).get(0);
-            String dst = queries.get(i).get(1);
-
-            if (!gr.containsKey(src) || !gr.containsKey(dst)) { // ⚠️ Variables not present
-                ans[i] = -1.0;
-            } else {
-                HashSet<String> vis = new HashSet<>();
-                double[] cur = { -1.0 };
-                double temp = 1.0;
-                dfs(gr, src, dst, cur, temp, vis);
-                ans[i] = cur[0];
-            }
-        }
-
-        return ans;
-    }
 }
+
+
+//Time Complexity: O(Q * (V + E))
+//Space Complexity: O(V + E)
