@@ -7,7 +7,9 @@ class Solution {
             return false;
         }
 
-        
+        if (wLen == 0) {
+            return true;
+        }
 
         int i = 0, j = 0;
         while(i < wLen && j < aLen){
