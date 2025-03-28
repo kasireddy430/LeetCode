@@ -1,36 +1,29 @@
 class Solution {
     public boolean validWordAbbreviation(String word, String abbr) {
-        int pointer1 = 0;
-        int pointer2 = 0;
-        int abbrNum = 0;
-
-        while (pointer2 < abbr.length()) {
-            if (Character.isDigit(abbr.charAt(pointer2))) {
-                // update the num in abbr
-                abbrNum = abbrNum * 10 + abbr.charAt(pointer2) - '0';
-                // checking the leading zero or empty substring
-                if (abbrNum == 0) {
-                    return false;
-                }
-                pointer2++;
-            } else {
-                // skip substrings and check validation
-                pointer1 += abbrNum;
-                if (pointer1 >= word.length()) {
-                    return false;
-                }
-                abbrNum = 0;
-
-                // check current char
-                if (word.charAt(pointer1) == abbr.charAt(pointer2)) {
-                    pointer1++;
-                    pointer2++;
-                } else {
-                    return false;
-                }
-            } 
+        if (word.isEmpty() != abbr.isEmpty()) {
+            return false;
         }
-    
-        return pointer1 + abbrNum == word.length();
+
+        if (word.isEmpty()) return true;
+
+        if (word.charAt(0) == abbr.charAt(0)) {
+            return validWordAbbreviation(word.substring(1), abbr.substring(1));
+        }
+
+        if (abbr.charAt(0) == '0' || !Character.isDigit(abbr.charAt(0))) {
+            return false;
+        }
+
+        int count = 0, index = 0;
+
+        while (index < abbr.length() && Character.isDigit(abbr.charAt(index))) {
+            count = 10 * count + (abbr.charAt(index) - '0');
+            index++;
+        }
+
+        if (count > word.length()) return false;
+
+        return validWordAbbreviation(word.substring(count), abbr.substring(index));
+
     }
 }
