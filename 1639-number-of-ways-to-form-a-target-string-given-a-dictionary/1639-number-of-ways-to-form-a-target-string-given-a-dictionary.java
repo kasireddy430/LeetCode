@@ -1,20 +1,25 @@
 class Solution {
-    public int numWays(List<String> words, String target) {
-        int m = target.length(), n = words.get(0).length(), MOD = (int)1e9 + 7;
-        int[][] freq = new int[26][n];
+    public int numWays(String[] words, String target) {
+        int n = words[0].length();
+        int m = target.length();
+        int mod = 1000000007;
+        int[] dp = new int[m+1];
+        dp[0] = 1;
+        
+        int[][] count = new int[n][26];
         for (String word : words) {
             for (int i = 0; i < n; i++) {
-                freq[i][word.charAt(i) - 'a']++;
+                count[i][word.charAt(i) - 'a']++;
             }
         }
-
-        long[] dp = new long[m + 1];
-        dp[0] = 1;
-        for (int j = 0; j < n; j++) {
-            for (int i = m - 1; i >= 0; i--) {
-                dp[i + 1] = (dp[i + 1] + dp[i] * freq[target.charAt(i) - 'a'][j]) % MOD;
+        
+        for (int i = 0; i < n; i++) {
+            for (int j = m-1; j >= 0; j--) {
+                dp[j+1] += (int)((long)dp[j] * count[i][target.charAt(j) - 'a'] % mod);
+                dp[j+1] %= mod;
             }
         }
-        return (int) dp[m];
+        
+        return dp[m];
     }
 }
