@@ -1,4 +1,5 @@
 
+
 public class Solution {
     public int minimumTime(int n, int[][] relations, int[] time) {
         List<List<Integer>> graph = new ArrayList<>();
