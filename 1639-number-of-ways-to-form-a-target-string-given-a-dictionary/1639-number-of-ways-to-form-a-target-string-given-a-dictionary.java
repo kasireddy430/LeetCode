@@ -1,34 +1,20 @@
 class Solution {
-    public int numWays(String[] words, String target) {
-        int n = words.length;
-        int m = words[0].length();
-        int mod = 1_000_000_007;
-        int[][] A = new int[m][26];
+    public int numWays(List<String> words, String target) {
+        int m = target.length(), n = words.get(0).length(), MOD = (int)1e9 + 7;
+        int[][] freq = new int[26][n];
         for (String word : words) {
-            for (int j = 0; j < m; j++) {
-                A[j][word.charAt(j) - 'a']++;
+            for (int i = 0; i < n; i++) {
+                freq[i][word.charAt(i) - 'a']++;
             }
         }
-        int[][] dp = new int[m][target.length()];
-        for (int[] row : dp) {
-            Arrays.fill(row, -1);
+
+        long[] dp = new long[m + 1];
+        dp[0] = 1;
+        for (int j = 0; j < n; j++) {
+            for (int i = m - 1; i >= 0; i--) {
+                dp[i + 1] = (dp[i + 1] + dp[i] * freq[target.charAt(i) - 'a'][j]) % MOD;
+            }
         }
-        return F(0, 0, target, A, dp, mod);
-    }
-    public int F(int i, int j, String target, int[][] A, int[][] dp, int mod) {
-        if (j == target.length()) {
-            return 1;
-        }
-        if (i == A.length) {
-            return 0; 
-        }
-        if (dp[i][j] != -1) {
-            return dp[i][j]; 
-        }
-        long count = F(i + 1, j, target, A, dp, mod); 
-        count %= mod;
-        count += (1L * A[i][target.charAt(j) - 'a'] * F(i + 1, j + 1, target, A, dp, mod)) % mod;
-        count %= mod;
-        return dp[i][j] = (int) count;
+        return (int) dp[m];
     }
 }
