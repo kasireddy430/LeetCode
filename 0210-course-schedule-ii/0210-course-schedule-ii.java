@@ -10,7 +10,7 @@ class Solution {
 
         List<Integer> output = new ArrayList<>();//List to store courses in the order in which they were processed
         Set<Integer> cycle = new HashSet<>();//Tracks courses currently in dfs path
-        Set<Integer> visit = new HashSet<>();//Tracks the courses processed and helps avaoiding re-processing courses
+        Set<Integer> visit = new HashSet<>();//Tracks the courses processed and helps avoiding re-processing courses
 
         //Iterate through courses and process their prerequisites
         //and if any course couldn't be processed(if cycle detected) return false
@@ -38,7 +38,7 @@ class Solution {
             return false;
         }
 
-        //Check if the course is already visited, if so avaoid revisiting
+        //Check if the course is already visited, if so avoid revisiting
         if(visit.contains(course)){
             return true;
         }
