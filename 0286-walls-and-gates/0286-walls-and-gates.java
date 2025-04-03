@@ -12,12 +12,12 @@ class Solution {
             for(int c = 0; c < COLS; c++){
                 //If a cell is gate, add it to the queue
                 if(rooms[r][c] == 0){
-                    q.add(new int[]{r, c});
+                    q.offer(new int[]{r, c});
                 }
             }
         }
 
-        //Simply return of queue is empty
+        //Simply return if queue is empty
         if(q.size() == 0){
             return;
         }
@@ -48,3 +48,6 @@ class Solution {
         }
     }
 }
+
+//Time Complexity: O(m * n)
+//Space Complexity: O(m * n)
