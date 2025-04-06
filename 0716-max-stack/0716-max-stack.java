@@ -41,7 +41,7 @@ class MaxStack {
             queue.poll();
         }
 
-        return max[0];       
+        return queue.peek()[0];       
     }
 
     public int popMax() {
