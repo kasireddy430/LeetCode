@@ -1,17 +1,17 @@
 class Solution {
     public boolean carPooling(int[][] trips, int capacity) {
-        int[] timestamp = new int[1001];
+        int[] diff = new int[1001];
         for (int[] trip : trips) {
-            timestamp[trip[1]] += trip[0];
-            timestamp[trip[2]] -= trip[0];
+            diff[trip[1]] += trip[0];
+            diff[trip[2]] -= trip[0];
         }
-        int usedCapacity = 0;
-        for (int number : timestamp) {
-            usedCapacity += number;
-            if (usedCapacity > capacity) {
+        int sum = 0;
+        for (int i : diff) {
+            sum += i;
+            if (sum > capacity) {
                 return false;
             }
         }
-        return true;
+        return true;     
     }
 }
