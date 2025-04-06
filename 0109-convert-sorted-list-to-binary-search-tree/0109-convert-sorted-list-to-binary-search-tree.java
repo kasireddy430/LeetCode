@@ -25,21 +25,34 @@
  */
 class Solution {
     public TreeNode sortedListToBST(ListNode head) {
-        if(head==null)
+        if(head == null){
             return null;
-        if(head.next==null)
-            return new TreeNode(head.val);
-        ListNode slow=head;
-        ListNode fast=head.next.next;
-        while(fast!=null && fast.next!=null){
-            slow=slow.next;
-            fast=fast.next.next;
         }
-        TreeNode res=new TreeNode(slow.next.val);
-        ListNode righthalf=slow.next.next;
-        slow.next=null;
-        res.left=sortedListToBST(head);
-        res.right=sortedListToBST(righthalf);
-        return res;
+
+        if(head.next == null){
+            return new TreeNode(head.val);
+        }
+
+        ListNode dummy = new ListNode(0, head);
+
+        ListNode slow = dummy;
+        ListNode fast = head;
+
+        while(fast != null && fast.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        TreeNode root = new TreeNode(slow.next.val);
+        ListNode rightHalf = slow.next.next;
+        slow.next = null;
+
+        root.left = sortedListToBST(head);
+        root.right = sortedListToBST(rightHalf);
+
+        return root;
     }
 }
+
+//Time Complexity: O(N log N)
+//Space Complexity: O(log N) since there won't be any skewed tree
