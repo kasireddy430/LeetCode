@@ -17,6 +17,11 @@ class Solution {
             }
         }
 
-        return stack.stream().mapToInt(i -> i).toArray();
+        int[] res = new int[stack.size()];
+        for (int i = 0; i < stack.size(); i++) {
+            res[i] = stack.get(i); // use get() to keep stack intact
+        }
+        return res;
+
     }
 }
