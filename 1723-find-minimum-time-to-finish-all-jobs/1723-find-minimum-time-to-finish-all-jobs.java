@@ -41,3 +41,6 @@ class Solution {
         return false;
     }
 }
+
+//Time Complexity: O(k^n * log(sum(jobs)))
+//Space Complexity: O(k^n)
