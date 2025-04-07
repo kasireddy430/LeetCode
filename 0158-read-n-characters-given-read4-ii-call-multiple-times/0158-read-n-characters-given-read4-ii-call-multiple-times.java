@@ -19,3 +19,6 @@ public class Solution extends Reader4 {
     }
 
 }
+
+//Time Complexity: O(n)
+//Space Complexity: O(1)
