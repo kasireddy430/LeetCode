@@ -1,62 +1,67 @@
 class Solution {
-    List<List<String>> res = new ArrayList<>();
-    Map<String, List<String>> adjList = new HashMap<>();
-    Map<String, Integer> dist = new HashMap<>();
-    Queue<String> q = new LinkedList<>();
-    Set<String> visited = new HashSet<>();
-    
     public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
-        Set<String> wordSet = new HashSet<>(wordList);
-        if (!wordSet.contains(endWord)) return res;
-
-        dist.put(beginWord, 0);
-        q.offer(beginWord);
-        while (!q.isEmpty()) {
-            String curWord = q.poll();
-            visited.add(curWord);
-            if (curWord.equals(endWord)) break;
-            getNeighbors(curWord, wordSet);
-        }
-        if (!dist.containsKey(endWord)) return res;
-
-        List<String> path = new ArrayList<>();
-        path.add(endWord);
-        backtrack(endWord, beginWord, path);
-        return res;
-    }
-
-    private void getNeighbors(String word, Set<String> wordSet) {
-        char[] chars = word.toCharArray();
-        for (int i = 0; i < chars.length; i++) {
-            char oldChar = chars[i];
-            for (char c = 'a'; c <= 'z'; c++) {
-                chars[i] = c;
-                String nextWord = new String(chars);
-                chars[i] = oldChar;
-                if (wordSet.contains(nextWord) && !visited.contains(nextWord)) {
-                    if (!dist.containsKey(nextWord)) {
-                        dist.put(nextWord, dist.get(word) + 1);
-                        q.offer(nextWord);
+        List<List<String>> ans = new ArrayList<>(); 
+        Map<String, Set<String>> reverse = new HashMap<>(); // reverse graph start from endWord
+        Set<String> wordSet = new HashSet<>(wordList); // remove the duplicate words
+        wordSet.remove(beginWord); // remove the first word to avoid cycle path
+        Queue<String> queue = new LinkedList<>(); // store current layer nodes
+        queue.add(beginWord); // first layer has only beginWord
+        Set<String> nextLevel = new HashSet<>(); // store nextLayer nodes
+        boolean findEnd = false; // find endWord flag
+        while (!queue.isEmpty()) { // traverse current layer nodes
+            String word = queue.poll();
+            for (String next : wordSet) {
+                if (isLadder(word, next)) { // is ladder words
+					// construct the reverse graph from endWord
+                    Set<String> reverseLadders = reverse.computeIfAbsent(next, k -> new HashSet<>());
+                    reverseLadders.add(word); 
+                    if (endWord.equals(next)) {
+                        findEnd = true;
                     }
-                    if (dist.get(nextWord) == dist.get(word) + 1) {
-                        adjList.computeIfAbsent(nextWord, k -> new ArrayList<>()).add(word);
-                    }
+                    nextLevel.add(next); // store next layer nodes
                 }
             }
+            if (queue.isEmpty()) { // when current layer is all visited
+                if (findEnd) break; // if find the endWord, then break the while loop
+                queue.addAll(nextLevel); // add next layer nodes to queue
+                wordSet.removeAll(nextLevel); // remove all next layer nodes in wordSet
+                nextLevel.clear();
+            }
+        }
+        if (!findEnd) return ans; // if can't reach endWord from startWord, then return ans.
+        Set<String> path = new LinkedHashSet<>();
+        path.add(endWord);
+		// traverse reverse graph from endWord to beginWord
+        findPath(endWord, beginWord, reverse, ans, path); 
+        return ans;
+    }
+
+
+    private void findPath(String endWord, String beginWord, Map<String, Set<String>> graph,
+                                 List<List<String>> ans, Set<String> path) {
+        Set<String> next = graph.get(endWord);
+        if (next == null) return;
+        for (String word : next) {
+            path.add(word);
+            if (beginWord.equals(word)) {
+                List<String> shortestPath = new ArrayList<>(path);
+                Collections.reverse(shortestPath); // reverse words in shortest path
+                ans.add(shortestPath); // add the shortest path to ans.
+            } else {
+                findPath(word, beginWord, graph, ans, path);
+            }
+            path.remove(word);
         }
     }
 
-    private void backtrack(String cur, String begin, List<String> path) {
-        if (cur.equals(begin)) {
-            res.add(new ArrayList<>(path));
-            return;
+    private boolean isLadder(String s, String t) {
+        if (s.length() != t.length()) return false;
+        int diffCount = 0;
+        int n = s.length();
+        for (int i = 0; i < n; i++) {
+            if (s.charAt(i) != t.charAt(i)) diffCount++;
+            if (diffCount > 1) return false;
         }
-        if (!adjList.containsKey(cur)) return;
-
-        for (String prev : adjList.get(cur)) {
-            path.add(0, prev);
-            backtrack(prev, begin, path);
-            path.remove(0);
-        }
+        return diffCount == 1;
     }
 }
