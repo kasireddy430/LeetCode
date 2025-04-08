@@ -1,78 +1,62 @@
 class Solution {
+    List<List<String>> res = new ArrayList<>();
+    Map<String, List<String>> adjList = new HashMap<>();
+    Map<String, Integer> dist = new HashMap<>();
+    Queue<String> q = new LinkedList<>();
+    Set<String> visited = new HashSet<>();
+    
     public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
-        // visited map
-        Map<String, Boolean> wordMap = new HashMap<>();
-        for (String word : wordList) {
-            wordMap.put(word, false);
+        Set<String> wordSet = new HashSet<>(wordList);
+        if (!wordSet.contains(endWord)) return res;
+
+        dist.put(beginWord, 0);
+        q.offer(beginWord);
+        while (!q.isEmpty()) {
+            String curWord = q.poll();
+            visited.add(curWord);
+            if (curWord.equals(endWord)) break;
+            getNeighbors(curWord, wordSet);
         }
+        if (!dist.containsKey(endWord)) return res;
 
-        LinkedList<List<String>> res = new LinkedList<>();
-
-        if (!wordMap.containsKey(endWord)) return res;
-
-        List<List<String>> levelList = new ArrayList<>();
-        boolean isSuccess = buildLevel(beginWord, endWord, wordMap, levelList);
-
-        if (!isSuccess) return res;
-
-        List<String> path = new LinkedList<>();
+        List<String> path = new ArrayList<>();
         path.add(endWord);
-        res.add(path);
-
-        for (int i = levelList.size() - 1; i >= 0; i--) {
-            List<String> curLevel = levelList.get(i);
-            int size = res.size();
-            while (size-- > 0) {
-                List<String> road = res.poll();
-                String w = road.get(0);
-                for (String levelWord : curLevel) {
-                    if (!beNext(levelWord, w)) continue;
-                    LinkedList<String> newPath = new LinkedList<>(road);
-                    newPath.addFirst(levelWord);
-                    res.offer(newPath);
-                }
-            }
-        }
+        backtrack(endWord, beginWord, path);
         return res;
-
-
     }
 
-    private boolean buildLevel(String beginWord, String endWord, Map<String, Boolean> wordMap, List<List<String>> levelList) {
-        Queue<String> queue = new LinkedList<>();
-        queue.offer(beginWord);
-        wordMap.remove(beginWord);
-
-        while (!queue.isEmpty()) {
-            int size = queue.size();
-            List<String> curLevel = new ArrayList<>();
-
-            while (size-- > 0) {
-                String word = queue.poll();
-                curLevel.add(word);
-
-                if (word.equals(endWord)) return true;
-                for (String key : wordMap.keySet()) {
-                    if (wordMap.get(key) || !beNext(word, key)) continue;
-                    queue.offer(key);
-                    wordMap.put(key, true);
+    private void getNeighbors(String word, Set<String> wordSet) {
+        char[] chars = word.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            char oldChar = chars[i];
+            for (char c = 'a'; c <= 'z'; c++) {
+                chars[i] = c;
+                String nextWord = new String(chars);
+                chars[i] = oldChar;
+                if (wordSet.contains(nextWord) && !visited.contains(nextWord)) {
+                    if (!dist.containsKey(nextWord)) {
+                        dist.put(nextWord, dist.get(word) + 1);
+                        q.offer(nextWord);
+                    }
+                    if (dist.get(nextWord) == dist.get(word) + 1) {
+                        adjList.computeIfAbsent(nextWord, k -> new ArrayList<>()).add(word);
+                    }
                 }
             }
-            levelList.add(curLevel);
         }
-
-        return false;
     }
 
-    private boolean beNext(String a, String b) {
-        int diff = 0;
-        char[] arrA = a.toCharArray();
-        char[] arrB = b.toCharArray();
-
-        for (int i = 0; i < a.length() && diff < 2; i++) {
-            if (arrA[i] != arrB[i]) diff++;
-
+    private void backtrack(String cur, String begin, List<String> path) {
+        if (cur.equals(begin)) {
+            res.add(new ArrayList<>(path));
+            return;
         }
-        return diff == 1;
+        if (!adjList.containsKey(cur)) return;
+
+        for (String prev : adjList.get(cur)) {
+            path.add(0, prev);
+            backtrack(prev, begin, path);
+            path.remove(0);
+        }
     }
 }
