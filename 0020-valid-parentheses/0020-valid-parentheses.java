@@ -8,8 +8,8 @@ class Solution {
         map.put('}', '{');
 
         for(char c : s.toCharArray()){
-            if(map.containsKey(c)){
-                if(!stack.isEmpty() && stack.peek() == map.get(c)){
+            if(!stack.isEmpty() && map.containsKey(c)){
+                if(stack.peek() == map.get(c)){
                     stack.pop();
                 } else {
                     return false;
