@@ -23,5 +23,5 @@ class Solution {
     }
 }
 
-//TC: O(n)
+//TC: O(n log n)
 //SC: O(n)
