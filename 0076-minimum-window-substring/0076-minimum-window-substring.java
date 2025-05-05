@@ -15,16 +15,14 @@ class Solution {
             tCount.put(tChar, tCount.getOrDefault(tChar, 0) + 1);
         }
 
-        System.out.println(tCount + "tCCCCC");
         for(int r = 0; r < s.length(); r++){
             char sChar = s.charAt(r);
             sCount.put(sChar, sCount.getOrDefault(sChar, 0) + 1);
 
-            System.out.println(sCount + "sCCCCC");
             if(tCount.containsKey(sChar) && sCount.get(sChar).equals(tCount.get(sChar))){
                 matches++;
             }
-            System.out.println(matches + "hi");
+            
             while(matches == tCount.size()){
                 if(r - l + 1 < minWindow){
                     minWindow = r - l + 1;
