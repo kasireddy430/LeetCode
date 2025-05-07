@@ -24,7 +24,7 @@ class Solution {
     }
 
     private int find(int[] parent, int u){
-        //if a node's parent is not itself, then recursively call find funtion to find root
+        //if a node's root is not itself, then recursively call find funtion to find root
         if(parent[u] != u){
             parent[u] = find(parent, parent[u]);//path compression
         }
