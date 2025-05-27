@@ -1,17 +1,20 @@
 class Solution {
     public int climbStairs(int n) {
-        if (n <= 3) return n;
-
-        int prev1 = 3;
-        int prev2 = 2;
-        int cur = 0;
-
-        for (int i = 4; i <= n; i++) {
-            cur = prev1 + prev2;
-            prev2 = prev1;
-            prev1 = cur;
+        if(n <= 2){
+            return n;
         }
 
-        return cur;        
+        int one = 1;
+        int two = 1;
+
+        for(int i = 0; i < n-1; i++){
+            int tmp = one;
+            one = one + two;
+            two = tmp;
+        }
+        return one;
     }
 }
+
+//Time Complexity: O(n)
+//Space Complexity: O(1)
