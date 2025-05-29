@@ -1,17 +1,21 @@
 class Solution {
     public int maxProduct(int[] nums) {
-        int maxProduct = nums[0], minProduct = nums[0], globalMax = nums[0];
+        int maxProduct = nums[0], minProduct = nums[0], globalProduct = nums[0];
 
-        for (int i = 1; i < nums.length; i++) {
+        for(int i = 1; i < nums.length; i++){
             int current = nums[i];
-            
-            int tempMax = Math.max(current, Math.max(current * maxProduct, current * minProduct));
-            minProduct = Math.min(current, Math.min(current * maxProduct, current * minProduct));
-            
+
+            int tempMax = Math.max(current, Math.max(maxProduct * current, minProduct * current));
+            minProduct = Math.min(current, Math.min(maxProduct * current, minProduct * current));
+
             maxProduct = tempMax;
-            globalMax = Math.max(globalMax, maxProduct);
+            globalProduct = Math.max(globalProduct, maxProduct);
+
         }
 
-        return globalMax;
+        return globalProduct;
     }
 }
+
+//Time Complexity: O(n)
+//Space COmplexity: O(1)
