@@ -1,30 +1,28 @@
 class Solution {
     public int numDecodings(String s) {
-        int length = s.length();
-        if(s.charAt(0) == '0'){
-            return 0;
-        }
 
-        int oneBack = 1;
-        int twoBack = 1;
+        int dp = 0, dp2 = 0;
+        int dp1 = 1;
 
-        for(int i = 1; i < length; i++){
-            int current = 0;
+        for(int i = s.length() - 1; i >= 0; i--){
+            char c = s.charAt(i);
 
-            if(s.charAt(i) != '0'){
-                current = oneBack;
+            if(c == '0'){
+                dp = 0;
+            } else {
+                dp = dp1;
+
+                if(i + 1 < s.length() && (s.charAt(i) == '1' || 
+                s.charAt(i) == '2' && s.charAt(i + 1) < '7')){
+                    dp += dp2;
+                }
             }
 
-            int twoDigit = Integer.parseInt(s.substring(i - 1, i + 1));
-            if(twoDigit >= 10 && twoDigit <= 26){
-                current += twoBack;
-            }
-
-            twoBack = oneBack;
-            oneBack = current;
+            dp2 = dp1;
+            dp1 = dp;
+            dp = 0;
         }
-
-        return oneBack;
+        return dp1;
     }
 }
 
