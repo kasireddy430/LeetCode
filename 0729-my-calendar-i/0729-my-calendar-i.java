@@ -6,19 +6,25 @@ class MyCalendar {
     }
 
     public boolean book(int start, int end) {
-        Integer prev = calendar.floorKey(start);   // event before
-        Integer next = calendar.ceilingKey(start); // event after
+        Integer prev = calendar.floorKey(start);
+        Integer next = calendar.ceilingKey(start);
 
-        // Check overlap with previous
-        if (prev != null && calendar.get(prev) > start) return false;
+        if(prev != null && calendar.get(prev) > start){
+            return false;
+        }
 
-        // Check overlap with next
-        if (next != null && next < end) return false;
+        if(next != null && next < end){
+            return false;
+        }
 
-        calendar.put(start, end); // Safe to add
+        calendar.put(start, end);
+
         return true;
     }
 }
+
+//TC: O(log n). treeMap insertion contributes O(log n)
+//SC: O(n)
 
 /**
  * Your MyCalendar object will be instantiated and called as such:
