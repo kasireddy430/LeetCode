@@ -1,56 +1,49 @@
 class Solution {
     public int numBusesToDestination(int[][] routes, int source, int target) {
-        if (source == target) {
-            return 0;
-        }
-        int maxStation = 0;
-        Map<Integer, List<Integer>> stationToBus = new HashMap<>();
+        if (source == target)
+            return 0; // No bus needed if already at the target
 
-        int buses = routes.length;
-
-        for (int i = 0; i < buses; i++) {
-            for (int station : routes[i]) {
-                stationToBus.computeIfAbsent(station, k -> new ArrayList<>()).add(i);
-                maxStation = Math.max(maxStation, station);
+        // Step 1: Map bus stops to the list of buses that stop there
+        Map<Integer, List<Integer>> stopToBuses = new HashMap<>();
+        for (int bus = 0; bus < routes.length; bus++) {
+            for (int stop : routes[bus]) {
+                stopToBuses.putIfAbsent(stop, new ArrayList<>());
+                stopToBuses.get(stop).add(bus);
             }
         }
 
-
-        if (!stationToBus.containsKey(source) || !stationToBus.containsKey(target)) {
+        if (!stopToBuses.containsKey(source) || !stopToBuses.containsKey(target)) {
             return -1;
         }
-        int busOffset = maxStation + 1;
-        int totalNodes = busOffset + buses;
-        //System.out.println(busOffset + " " + totalNodes);
-        int[] dist = new int[totalNodes];
-        Arrays.fill(dist, Integer.MAX_VALUE);
 
-        dist[source] = 0;
-        Deque<Integer> q = new ArrayDeque<>();
+        // Step 2: BFS Initialization
+        int busCount = 0;
+        Queue<Integer> q = new LinkedList<>();
+        Set<Integer> visitedBuses = new HashSet<>();
+        Set<Integer> visitedStops = new HashSet<>();
 
+        // Step 3: Start BFS from source stop
         q.add(source);
+        visitedStops.add(source);
 
         while (!q.isEmpty()) {
-            int node = q.poll();
-            //System.out.println(node);
-            if (node == target) {
-                return dist[target];
-            }
-            if (node < busOffset) {
-                for (int bus : stationToBus.get(node)) {
-                    int busNode = busOffset + bus;
-                    if (dist[busNode] > dist[node] + 1) {
-                        dist[busNode] = dist[node] + 1;
-                        q.addLast(busNode);
-                    }
-                }
-            } else {
-                int bus = node - busOffset;
-
-                for (int station : routes[bus]) {
-                    if (dist[station] > dist[node]) {
-                        dist[station] = dist[node];
-                        q.addFirst(station);
+            busCount++;
+            int size = q.size();
+            for (int i = 0; i < size; i++) {
+                int stop = q.poll();
+                // Traverse all buses available from this stop
+                for (int bus : stopToBuses.getOrDefault(stop, new ArrayList<>())) {
+                    if (visitedBuses.contains(bus))
+                        continue;
+                    visitedBuses.add(bus);
+                    // Traverse all stops this bus covers
+                    for (int nextStop : routes[bus]) {
+                        if (nextStop == target)
+                            return busCount;
+                        if (!visitedStops.contains(nextStop)) {
+                            visitedStops.add(nextStop);
+                            q.add(nextStop);
+                        }
                     }
                 }
             }
