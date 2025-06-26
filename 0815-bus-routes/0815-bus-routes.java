@@ -1,95 +1,75 @@
 class Solution {
-
-    List<List<Integer>> adjList = new ArrayList();
-
-    // Iterate over each pair of routes and add an edge between them if there's a common stop.
-    void createGraph(int[][] routes) {
-        for (int i = 0; i < routes.length; i++) {
-            for (int j = i + 1; j < routes.length; j++) {
-                if (haveCommonNode(routes[i], routes[j])) {
-                    adjList.get(i).add(j);
-                    adjList.get(j).add(i);
-                }
-            }
-        }
-    }
-
-    // Returns true if the provided routes have a common stop, false otherwise.
-    boolean haveCommonNode(int[] route1, int[] route2) {
-        int i = 0, j = 0;
-        while (i < route1.length && j < route2.length) {
-            if (route1[i] == route2[j]) {
-                return true;
-            }
-
-            if (route1[i] < route2[j]) {
-                i++;
-            } else {
-                j++;
-            }
-        }
-        return false;
-    }
-
-    // Add all the routes in the queue that have the source as one of the stops.
-    void addStartingNodes(Queue<Integer> q, int[][] routes, int source) {
-        for (int i = 0; i < routes.length; i++) {
-            if (isStopExist(routes[i], source)) {
-                q.add(i);
-            }
-        }
-    }
-
-    // Returns true if the given stop is present in the route, false otherwise.
-    boolean isStopExist(int[] route, int stop) {
-        for (int j = 0; j < route.length; j++) {
-            if (route[j] == stop) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public int numBusesToDestination(int[][] routes, int source, int target) {
-        if (source == target) {
-            return 0;
+        /*Create a hashMap such that we can easily access inverted mappings(or we can say inverted relations) of that of the input. 
+		ie, in input we had:
+		
+        Bus Number(depicted as row in 2D input called routes[][]) -> Bus Stops(depicted as cols in 2D input called routes[][])
+        now using hashMap we attempt to establish:
+        
+		Bus Stop(Integer) -> Bus Number(ArrayList<Integer>), and this relation means that on a bus stop, which Buses can we expect
+        
+        All this is done because the cost of reaching all the bus stops for a given bus number is same irrespective intermediate nodes hopped */
+		
+        HashMap<Integer, ArrayList<Integer>> map = new HashMap();
+        
+        for(int i = 0; i < routes.length; i++){
+            for(int j=0; j< routes[i].length; j++){
+                int busStopNo = routes[i][j];
+                ArrayList<Integer> busNo = map.getOrDefault(busStopNo, new ArrayList<>());
+                busNo.add(i);
+                map.put(busStopNo, busNo);
+            }
         }
-
-        for (int i = 0; i < routes.length; ++i) {
-            Arrays.sort(routes[i]);
-            adjList.add(new ArrayList());
-        }
-
-        createGraph(routes);
-
-        Queue<Integer> q = new LinkedList<>();
-        addStartingNodes(q, routes, source);
-
-        Set<Integer> vis = new HashSet<Integer>(routes.length);
-        int busCount = 1;
-        while (!q.isEmpty()) {
-            int sz = q.size();
-
-            while (sz-- > 0) {
-                int node = q.remove();
-
-                // Return busCount, if the stop target is present in the current route.
-                if (isStopExist(routes[node], target)) {
-                    return busCount;
+        
+        
+        //we need a queue for BFS
+        LinkedList<Integer> queue = new LinkedList<>();
+		
+        //we need a hashSet to keep track of Bus Stops visited
+        HashSet<Integer> busStopVisited = new HashSet<>();
+		
+        //basically store the bus number to keep track of all bus stops visited for a Bus Number..kinda bundle up the work of busStopVisited(hashSet made just above) and reduce time complexity of rechecking all bus stops for a given Bus.
+        HashSet<Integer> busVisited = new HashSet<>();
+       
+        int cost = 0;
+        
+        //add source to the queue and make it visited
+        queue.addLast(source);
+        busStopVisited.add(source);
+		
+        //start BFS
+        while(queue.size()>0){
+            int size = queue.size();
+            while(size-->0){
+                int rem = queue.removeFirst();
+                // if the removed bus stop is equal to our target bus stop, then return the cost(cost is incermented when a different bus number is taken to reach destination)
+                if(rem == target){
+                    return cost;
                 }
-
-                // Add the adjacent routes.
-                for (int adj : adjList.get(node)) {
-                    if (!vis.contains(adj)) {
-                        vis.add(adj);
-                        q.add(adj);
+                //else
+                //use the hashmap to get the list of buses we can get form the bus stop on which we currently stand
+                ArrayList<Integer> buses = map.get(rem);
+                //think as if we are trying to catch and explore a new bus from the bus stop on which we are
+                for(int bus: buses){
+                    //already visited then don't do anything, just continue to explore new buses
+                    if(busVisited.contains(bus)==true){
+                        continue;
                     }
+                    //new bus found->  now catch this bus and see where can you reach from this bus with a hope that this bus helps us get to our target bus stop when in the next BFS iteration we remove the busStops of this bus and test the condition if(rem == target) return cost;
+                    int[] arr = routes[bus];
+                    for(int busStop: arr){
+                        if(busStopVisited.contains(busStop)==true){
+                            continue;
+                        }
+                        queue.addLast(busStop);
+                        busStopVisited.add(busStop);
+                    }
+                    busVisited.add(bus);
                 }
             }
-
-            busCount++;
+            // we have taken a new bus so increase the cost
+            cost++;
         }
-
         return -1;
     }
 }
