@@ -1,38 +1,48 @@
 class Solution {
     public int maximumDetonation(int[][] bombs) {
-        int n = bombs.length;
-        List<Integer>[] g = new ArrayList[n];
-        Arrays.setAll(g, i -> new ArrayList<>());
-        for (int i = 0; i < n; i++) {
-            long x = bombs[i][0];
-            long y = bombs[i][1];
-            long r = bombs[i][2];
+        // Max number of bombs detonated
+        int max = 0;
+
+        // Detanote each bomb, and track number of bombs detonated
+        for (int i = 0; i < bombs.length; i++) {
+            max = Math.max(max, bfs(i, bombs));
+        }
+        
+        return max;
+    }
+
+    private int bfs(int k, int[][] bombs) {
+        int count = 1; // number of detonated bombs;
+
+        int n = bombs.length; // number of bombs
+        
+        // Track the bombs that have been detonated
+        boolean[] visited = new boolean[n];
+        visited[k] = true;
+
+        Queue<Integer> queue = new LinkedList<>();
+        queue.offer(k);
+
+        while (!queue.isEmpty()) {
+            int i = queue.poll();
             for (int j = 0; j < n; j++) {
-                long dx = x - bombs[j][0];
-                long dy = y - bombs[j][1];
-                if (j != i && dx * dx + dy * dy <= r * r) {
-                    g[i].add(j); // i 可以引爆 j
+                if (!visited[j] && isInRange(bombs[i], bombs[j])) {
+                    queue.offer(j);
+                    visited[j] = true;
+                    count++;
                 }
             }
         }
 
-        int ans = 0;
-        boolean[] vis = new boolean[n];
-        for (int i = 0; i < n && ans < n; i++) {
-            Arrays.fill(vis, false);
-            ans = Math.max(ans, dfs(g, vis, i));
-        }
-        return ans;
+        return count;
     }
 
-    private int dfs(List<Integer>[] g, boolean[] vis, int x) {
-        vis[x] = true;
-        int cnt = 1;
-        for (int y : g[x]) {
-            if (!vis[y]) {
-                cnt += dfs(g, vis, y);
-            }
-        }
-        return cnt;
+    // check if bomb2 is in range to be detonated by bomb1
+    public boolean isInRange(int[] bomb1, int[] bomb2) {
+        long dx = bomb1[0] - bomb2[0];
+        long dy = bomb1[1] - bomb2[1];
+        long r = bomb1[2];
+        
+        return dx*dx + dy*dy <= r*r; 
     }
 }
