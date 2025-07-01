@@ -7,36 +7,32 @@ public class Solution {
         }
 
         for (int i = 0; i < n; i++) {
-            int x1 = bombs[i][0], y1 = bombs[i][1], r1 = bombs[i][2];
             for (int j = i + 1; j < n; j++) {
+                int x1 = bombs[i][0], y1 = bombs[i][1], r1 = bombs[i][2];
                 int x2 = bombs[j][0], y2 = bombs[j][1], r2 = bombs[j][2];
                 long d = (long) (x1 - x2) * (x1 - x2) + (long) (y1 - y2) * (y1 - y2);
 
-                if (d <= (long) r1 * r1) adj[i].add(j);
-                if (d <= (long) r2 * r2) adj[j].add(i);
+                if (d <= (long) r1 * r1) {
+                    adj[i].add(j);
+                }
+                if (d <= (long) r2 * r2) {
+                    adj[j].add(i);
+                }
             }
         }
 
         int res = 0;
         for (int i = 0; i < n; i++) {
-            Stack<Integer> stack = new Stack<>();
-            boolean[] visit = new boolean[n];
-            stack.push(i);
-            visit[i] = true;
-            int count = 1;
-
-            while (!stack.isEmpty()) {
-                int node = stack.pop();
-                for (int nei : adj[node]) {
-                    if (!visit[nei]) {
-                        visit[nei] = true;
-                        count++;
-                        stack.push(nei);
-                    }
-                }
-            }
-            res = Math.max(res, count);
+            res = Math.max(res, dfs(i, new HashSet<>(), adj));
         }
         return res;
+    }
+
+    private int dfs(int i, Set<Integer> visit, List<Integer>[] adj) {
+        if (!visit.add(i)) return 0;
+        for (int nei : adj[i]) {
+            dfs(nei, visit, adj);
+        }
+        return visit.size();
     }
 }
