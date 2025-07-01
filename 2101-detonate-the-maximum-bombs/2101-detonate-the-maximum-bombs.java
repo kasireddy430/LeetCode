@@ -1,48 +1,42 @@
-class Solution {
+public class Solution {
     public int maximumDetonation(int[][] bombs) {
-        // Max number of bombs detonated
-        int max = 0;
-
-        // Detanote each bomb, and track number of bombs detonated
-        for (int i = 0; i < bombs.length; i++) {
-            max = Math.max(max, bfs(i, bombs));
+        int n = bombs.length;
+        List<Integer>[] adj = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            adj[i] = new ArrayList<>();
         }
-        
-        return max;
-    }
 
-    private int bfs(int k, int[][] bombs) {
-        int count = 1; // number of detonated bombs;
+        for (int i = 0; i < n; i++) {
+            int x1 = bombs[i][0], y1 = bombs[i][1], r1 = bombs[i][2];
+            for (int j = i + 1; j < n; j++) {
+                int x2 = bombs[j][0], y2 = bombs[j][1], r2 = bombs[j][2];
+                long d = (long) (x1 - x2) * (x1 - x2) + (long) (y1 - y2) * (y1 - y2);
 
-        int n = bombs.length; // number of bombs
-        
-        // Track the bombs that have been detonated
-        boolean[] visited = new boolean[n];
-        visited[k] = true;
-
-        Queue<Integer> queue = new LinkedList<>();
-        queue.offer(k);
-
-        while (!queue.isEmpty()) {
-            int i = queue.poll();
-            for (int j = 0; j < n; j++) {
-                if (!visited[j] && isInRange(bombs[i], bombs[j])) {
-                    queue.offer(j);
-                    visited[j] = true;
-                    count++;
-                }
+                if (d <= (long) r1 * r1) adj[i].add(j);
+                if (d <= (long) r2 * r2) adj[j].add(i);
             }
         }
 
-        return count;
-    }
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            Stack<Integer> stack = new Stack<>();
+            boolean[] visit = new boolean[n];
+            stack.push(i);
+            visit[i] = true;
+            int count = 1;
 
-    // check if bomb2 is in range to be detonated by bomb1
-    public boolean isInRange(int[] bomb1, int[] bomb2) {
-        long dx = bomb1[0] - bomb2[0];
-        long dy = bomb1[1] - bomb2[1];
-        long r = bomb1[2];
-        
-        return dx*dx + dy*dy <= r*r; 
+            while (!stack.isEmpty()) {
+                int node = stack.pop();
+                for (int nei : adj[node]) {
+                    if (!visit[nei]) {
+                        visit[nei] = true;
+                        count++;
+                        stack.push(nei);
+                    }
+                }
+            }
+            res = Math.max(res, count);
+        }
+        return res;
     }
 }
