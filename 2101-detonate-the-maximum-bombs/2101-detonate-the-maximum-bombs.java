@@ -1,38 +1,43 @@
-public class Solution {
+class Solution {
     public int maximumDetonation(int[][] bombs) {
+        Map<Integer, List<Integer>> graph = new HashMap<>();
         int n = bombs.length;
-        List<Integer>[] adj = new ArrayList[n];
+        
+        // Build the graph
         for (int i = 0; i < n; i++) {
-            adj[i] = new ArrayList<>();
-        }
-
-        for (int i = 0; i < n; i++) {
-            for (int j = i + 1; j < n; j++) {
-                int x1 = bombs[i][0], y1 = bombs[i][1], r1 = bombs[i][2];
-                int x2 = bombs[j][0], y2 = bombs[j][1], r2 = bombs[j][2];
-                long d = (long) (x1 - x2) * (x1 - x2) + (long) (y1 - y2) * (y1 - y2);
-
-                if (d <= (long) r1 * r1) {
-                    adj[i].add(j);
-                }
-                if (d <= (long) r2 * r2) {
-                    adj[j].add(i);
+            for (int j = 0; j < n; j++) {
+                int xi = bombs[i][0], yi = bombs[i][1], ri = bombs[i][2];
+                int xj = bombs[j][0], yj = bombs[j][1];
+                
+                // Create a path from node i to node j, if bomb i detonates bomb j.
+                if ((long)ri * ri >= (long)(xi - xj) * (xi - xj) + (long)(yi - yj) * (yi - yj)) {
+                    graph.computeIfAbsent(i, k -> new ArrayList<>()).add(j);
                 }
             }
         }
-
-        int res = 0;
+        
+        int answer = 0;
         for (int i = 0; i < n; i++) {
-            res = Math.max(res, dfs(i, new HashSet<>(), adj));
+            answer = Math.max(answer, bfs(i, graph));
         }
-        return res;
+        
+        return answer;
     }
-
-    private int dfs(int i, Set<Integer> visit, List<Integer>[] adj) {
-        if (!visit.add(i)) return 0;
-        for (int nei : adj[i]) {
-            dfs(nei, visit, adj);
+    
+    private int bfs(int i, Map<Integer, List<Integer>> graph) {
+        Deque<Integer> queue = new ArrayDeque<>();
+        Set<Integer> visited = new HashSet<>();
+        queue.offer(i);
+        visited.add(i);
+        while (!queue.isEmpty()) {
+            int cur = queue.poll();
+            for (int neib : graph.getOrDefault(cur, new ArrayList<>())) {
+                if (!visited.contains(neib)) {
+                    visited.add(neib);
+                    queue.offer(neib);
+                }
+            }
         }
-        return visit.size();
+        return visited.size();
     }
 }
