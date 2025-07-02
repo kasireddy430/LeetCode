@@ -1,48 +1,46 @@
 class Solution {
     public int maximumDetonation(int[][] bombs) {
-        // Max number of bombs detonated
         int max = 0;
-
-        // Detanote each bomb, and track number of bombs detonated
-        for (int i = 0; i < bombs.length; i++) {
+        for(int i = 0; i < bombs.length;i++){
             max = Math.max(max, bfs(i, bombs));
         }
-        
+
         return max;
     }
 
-    private int bfs(int k, int[][] bombs) {
-        int count = 1; // number of detonated bombs;
+    private int bfs(int k, int[][] bombs){
+        int count = 1;
 
-        int n = bombs.length; // number of bombs
-        
-        // Track the bombs that have been detonated
-        boolean[] visited = new boolean[n];
+        boolean[] visited = new boolean[bombs.length];
         visited[k] = true;
 
-        Queue<Integer> queue = new LinkedList<>();
-        queue.offer(k);
+        Queue<Integer> q = new LinkedList<>();
+        q.offer(k);
 
-        while (!queue.isEmpty()) {
-            int i = queue.poll();
-            for (int j = 0; j < n; j++) {
-                if (!visited[j] && isInRange(bombs[i], bombs[j])) {
-                    queue.offer(j);
+        while(!q.isEmpty()){
+            int i = q.poll();
+
+            for(int j = 0; j < bombs.length;j++){
+                if(!visited[j] && isInRadius(bombs[i], bombs[j])){
                     visited[j] = true;
                     count++;
+                    q.offer(j);
                 }
             }
         }
-
         return count;
     }
 
-    // check if bomb2 is in range to be detonated by bomb1
-    public boolean isInRange(int[] bomb1, int[] bomb2) {
-        long dx = bomb1[0] - bomb2[0];
-        long dy = bomb1[1] - bomb2[1];
+    private boolean isInRadius(int[] bomb1, int[] bomb2){
+        long x = bomb1[0] - bomb2[0];
+        long y = bomb1[1] - bomb2[1];
+
         long r = bomb1[2];
-        
-        return dx*dx + dy*dy <= r*r; 
+
+        return x * x + y * y <= r * r;
     }
 }
+
+//TC: O(n ^ 3)
+//SC : O(n)
+
