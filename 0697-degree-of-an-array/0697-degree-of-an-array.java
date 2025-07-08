@@ -38,3 +38,6 @@ class Solution {
         return minLength;
     }
 }
+
+//TC: O(n)
+//SC: O(n)
