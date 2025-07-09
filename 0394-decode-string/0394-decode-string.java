@@ -1,41 +1,37 @@
 class Solution {
     public String decodeString(String s) {
-        Stack<Character> stack = new Stack<>();
-        for (int i = 0; i < s.length(); i++) {
-            if (s.charAt(i) == ']') {
-                List<Character> decodedString = new ArrayList<>();
-                // get the encoded string
-                while (stack.peek() != '[') {
-                    decodedString.add(stack.pop());
+        Stack<Integer> countStack = new Stack<>();
+        Stack<StringBuilder> stringStack = new Stack<>();
+        StringBuilder currentString = new StringBuilder();
+        int currentNum = 0;
+
+        for (char c : s.toCharArray()) {
+            if (Character.isDigit(c)) {
+                // It's a number
+                currentNum = currentNum * 10 + (c - '0'); // Handles multiple digit numbers
+            } else if (c == '[') {
+                countStack.push(currentNum);
+                stringStack.push(currentString);
+                // Reset everything for the new calculation inside nested [
+                currentString = new StringBuilder();
+                currentNum = 0;
+            } else if (c == ']') {
+                // A loop has been closed. Pop and calculate strings to attach
+                int repeatTimes = countStack.pop();
+                StringBuilder stringToAttach = stringStack.pop();
+                for (int i = 0; i < repeatTimes; i++) {
+                    stringToAttach.append(currentString);
                 }
-                // pop [ from the stack
-                stack.pop();
-                int base = 1;
-                int k = 0;
-                // get the number k
-                while (!stack.isEmpty() && Character.isDigit(stack.peek())) {
-                    k = k + (stack.pop() - '0') * base;
-                    base *= 10;
-                }
-                // decode k[decodedString], by pushing decodedString k times into stack
-                while (k != 0) {
-                    for (int j = decodedString.size() - 1; j >= 0; j--) {
-                        stack.push(decodedString.get(j));
-                    }
-                    k--;
-                }
+
+                currentString = stringToAttach; // Re-assigns newly formed string for next iterations.
+            } else {
+                // It's an alphabet
+                currentString.append(c);
             }
-            // push the current character to stack
-            else {
-                stack.push(s.charAt(i));
-            }
-        }      
-        // get the result from stack
-        char[] result = new char[stack.size()];
-        for (int i = result.length - 1; i >= 0; i--) {
-            result[i] = stack.pop();
         }
-        return new String(result);
+
+        return currentString.toString(); // Return the resultant final string.
     }
 }
 
+// TC and SC: O(N)
