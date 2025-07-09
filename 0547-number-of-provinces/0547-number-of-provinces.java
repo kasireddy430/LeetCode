@@ -32,5 +32,5 @@ class Solution {
     }
 }
 
-//TC: O(n)
+//TC: O(n ^ 2)
 //SC: O(n)
