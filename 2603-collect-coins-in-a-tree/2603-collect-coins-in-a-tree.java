@@ -1,54 +1,60 @@
 class Solution {
     public int collectTheCoins(int[] coins, int[][] edges) {
-        int n = coins.length; 
-        Set<Integer>[] tree = new HashSet[n]; 
+        int n = coins.length;
+
+        // Step 1: Build the adjacency list using List instead of Set
+        List<Integer>[] tree = new ArrayList[n];
         for (int i = 0; i < n; ++i) {
-            tree[i] = new HashSet(); 
+            tree[i] = new ArrayList<>();
         }
-        
-        // Build the tree from the edges
         for (int[] e : edges) {
-            tree[e[0]].add(e[1]); 
-            tree[e[1]].add(e[0]); 
+            tree[e[0]].add(e[1]);
+            tree[e[1]].add(e[0]);
         }
-        
-        // Find the leaves with zero coins
-        List<Integer> leaf = new ArrayList(); 
+
+        // Step 2: Prune all leaf nodes that do not contain coins
+        Queue<Integer> queue = new LinkedList<>();
         for (int i = 0; i < n; ++i) {
-            int u = i; 
-            while (tree[u].size() == 1 && coins[u] == 0) {
-                int v = tree[u].iterator().next(); 
-                tree[u].remove(v); 
-                tree[v].remove(u); 
-                u = v; 
-            }
-            if (tree[u].size() == 1) {
-                leaf.add(u); 
+            if (tree[i].size() == 1 && coins[i] == 0) {
+                queue.offer(i);
             }
         }
-        
-        // Remove the leaves one by one
-        for (int sz = 2; sz > 0; --sz) {
-            List<Integer> temp = new ArrayList(); 
-            for (int u : leaf) {
-                if (tree[u].size() == 1) {
-                    int v = tree[u].iterator().next(); 
-                    tree[u].remove(v); 
-                    tree[v].remove(u); 
-                    if (tree[v].size() == 1) {
-                        temp.add(v); 
-                    }
+
+        while (!queue.isEmpty()) {
+            int u = queue.poll();
+            if (tree[u].isEmpty()) continue;
+
+            int v = tree[u].get(0); // only neighbor
+            tree[u].remove((Integer) v);
+            tree[v].remove((Integer) u);
+
+            if (tree[v].size() == 1 && coins[v] == 0) {
+                queue.offer(v);
+            }
+        }
+
+        // Step 3: Remove two layers of leaves
+        for (int k = 0; k < 2; ++k) {
+            List<Integer> leaves = new ArrayList<>();
+            for (int i = 0; i < n; ++i) {
+                if (tree[i].size() == 1) {
+                    leaves.add(i);
                 }
             }
-            leaf = temp; 
+            for (int u : leaves) {
+                if (tree[u].isEmpty()) continue;
+                int v = tree[u].get(0);
+                tree[u].remove((Integer) v);
+                tree[v].remove((Integer) u);
+            }
         }
-        
-        // Count the remaining edges in the tree
-        int ans = 0; 
+
+        // Step 4: Count remaining edges
+        int ans = 0;
         for (int i = 0; i < n; ++i) {
-            ans += tree[i].size(); 
+            ans += tree[i].size();
         }
-        
-        return ans; 
+
+        return ans;
     }
 }
