@@ -2,26 +2,28 @@ class Solution {
     public int collectTheCoins(int[] coins, int[][] edges) {
         int n = coins.length;
 
-        // Step 1: Build the adjacency list and degree array
-        List<Integer>[] tree = new ArrayList[n];
+        // Step 1: Build adjacency list and degree array
+        List<List<Integer>> tree = new ArrayList<>();
         int[] degree = new int[n];
+
+        // Initialize each list inside the outer list
         for (int i = 0; i < n; ++i) {
-            tree[i] = new ArrayList<>();
+            tree.add(new ArrayList<>());
         }
 
         for (int[] edge : edges) {
             int u = edge[0], v = edge[1];
-            tree[u].add(v);
-            tree[v].add(u);
+            tree.get(u).add(v);
+            tree.get(v).add(u);
             degree[u]++;
             degree[v]++;
         }
 
-        // Step 2: Mark all nodes as initially "alive" (in the tree)
+        // Step 2: Track which nodes are alive
         boolean[] alive = new boolean[n];
         Arrays.fill(alive, true);
 
-        // Step 3: Prune all leaf nodes that have no coins
+        // Step 3: Prune leaf nodes with no coins
         Queue<Integer> queue = new LinkedList<>();
         for (int i = 0; i < n; ++i) {
             if (degree[i] == 1 && coins[i] == 0) {
@@ -31,9 +33,9 @@ class Solution {
 
         while (!queue.isEmpty()) {
             int u = queue.poll();
-            alive[u] = false;  // Mark node as removed
+            alive[u] = false;
 
-            for (int v : tree[u]) {
+            for (int v : tree.get(u)) {
                 if (!alive[v]) continue;
 
                 degree[v]--;
@@ -43,8 +45,7 @@ class Solution {
             }
         }
 
-        // Step 4: Remove 2 layers of leaves (farthest nodes)
-        // These are not needed for the return trip after collecting coins
+        // Step 4: Remove 2 layers of leaves
         for (int round = 0; round < 2; round++) {
             List<Integer> leaves = new ArrayList<>();
             for (int i = 0; i < n; i++) {
@@ -55,23 +56,22 @@ class Solution {
 
             for (int u : leaves) {
                 alive[u] = false;
-                for (int v : tree[u]) {
+                for (int v : tree.get(u)) {
                     if (!alive[v]) continue;
                     degree[v]--;
                 }
             }
         }
 
-        // Step 5: Count edges remaining between alive nodes
+        // Step 5: Count remaining edges
         int edgeCount = 0;
         for (int i = 0; i < n; ++i) {
             if (!alive[i]) continue;
-            for (int j : tree[i]) {
+            for (int j : tree.get(i)) {
                 if (alive[j]) edgeCount++;
             }
         }
 
-        // Since we count each edge twice (once from u, once from v), return the total
         return edgeCount;
     }
 }
