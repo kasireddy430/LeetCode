@@ -2,59 +2,68 @@ class Solution {
     public int collectTheCoins(int[] coins, int[][] edges) {
         int n = coins.length;
 
-        // Step 1: Build the adjacency list using List instead of Set
+        // Build adjacency list
         List<Integer>[] tree = new ArrayList[n];
         for (int i = 0; i < n; ++i) {
             tree[i] = new ArrayList<>();
         }
+        int[] degree = new int[n];
         for (int[] e : edges) {
             tree[e[0]].add(e[1]);
             tree[e[1]].add(e[0]);
+            degree[e[0]]++;
+            degree[e[1]]++;
         }
 
-        // Step 2: Prune all leaf nodes that do not contain coins
-        Queue<Integer> queue = new LinkedList<>();
+        // Prune leaf nodes with no coins
+        Queue<Integer> q = new LinkedList<>();
         for (int i = 0; i < n; ++i) {
-            if (tree[i].size() == 1 && coins[i] == 0) {
-                queue.offer(i);
+            if (degree[i] == 1 && coins[i] == 0) {
+                q.offer(i);
             }
         }
 
-        while (!queue.isEmpty()) {
-            int u = queue.poll();
-            if (tree[u].isEmpty()) continue;
+        boolean[] alive = new boolean[n];
+        Arrays.fill(alive, true);
 
-            int v = tree[u].get(0); // only neighbor
-            tree[u].remove((Integer) v);
-            tree[v].remove((Integer) u);
-
-            if (tree[v].size() == 1 && coins[v] == 0) {
-                queue.offer(v);
+        while (!q.isEmpty()) {
+            int u = q.poll();
+            alive[u] = false;
+            for (int v : tree[u]) {
+                if (!alive[v]) continue;
+                degree[v]--;
+                if (degree[v] == 1 && coins[v] == 0) {
+                    q.offer(v);
+                }
             }
         }
 
-        // Step 3: Remove two layers of leaves
-        for (int k = 0; k < 2; ++k) {
+        // Remove 2 outermost layers of leaves
+        for (int round = 0; round < 2; round++) {
             List<Integer> leaves = new ArrayList<>();
-            for (int i = 0; i < n; ++i) {
-                if (tree[i].size() == 1) {
+            for (int i = 0; i < n; i++) {
+                if (alive[i] && degree[i] == 1) {
                     leaves.add(i);
                 }
             }
             for (int u : leaves) {
-                if (tree[u].isEmpty()) continue;
-                int v = tree[u].get(0);
-                tree[u].remove((Integer) v);
-                tree[v].remove((Integer) u);
+                alive[u] = false;
+                for (int v : tree[u]) {
+                    if (!alive[v]) continue;
+                    degree[v]--;
+                }
             }
         }
 
-        // Step 4: Count remaining edges
-        int ans = 0;
+        // Count remaining edges
+        int edgeCount = 0;
         for (int i = 0; i < n; ++i) {
-            ans += tree[i].size();
+            if (!alive[i]) continue;
+            for (int j : tree[i]) {
+                if (alive[j]) edgeCount++;
+            }
         }
 
-        return ans;
+        return edgeCount;
     }
 }
