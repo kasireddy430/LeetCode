@@ -1,41 +1,39 @@
-class Solution {
-    public int shortestDistance(int[][] maze, int[] start, int[] destination) {
-        int m = maze.length, n = maze[0].length;
-        int[][] distance = new int[m][n];
-        for (int[] row : distance)
+public class Solution {
+    public int shortestDistance(int[][] maze, int[] start, int[] dest) {
+        int[][] distance = new int[maze.length][maze[0].length];
+        for (int[] row: distance)
             Arrays.fill(row, Integer.MAX_VALUE);
-
-        // 4 directions: right, down, left, up
-        int[][] directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
-
-        Queue<int[]> queue = new LinkedList<>();
-        queue.offer(new int[]{start[0], start[1]});
         distance[start[0]][start[1]] = 0;
+        dijkstra(maze, start, distance);
+        return distance[dest[0]][dest[1]] == Integer.MAX_VALUE ? -1 : distance[dest[0]][dest[1]];
+    }
 
+    public void dijkstra(int[][] maze, int[] start, int[][] distance) {
+        int[][] dirs={{0,1},{0,-1},{-1,0},{1,0}};
+        PriorityQueue < int[] > queue = new PriorityQueue < > ((a, b) -> a[2] - b[2]);
+        queue.offer(new int[]{start[0],start[1],0});
         while (!queue.isEmpty()) {
-            int[] curr = queue.poll();
-            for (int[] dir : directions) {
-                int x = curr[0], y = curr[1];
+            int[] s = queue.poll();
+            if(distance[s[0]][s[1]] < s[2])
+                continue;
+            for (int[] dir: dirs) {
+                int x = s[0];
+                int y = s[1];
                 int count = 0;
-
-                // Roll the ball until it hits a wall
-                while (x + dir[0] >= 0 && x + dir[0] < m &&
-                       y + dir[1] >= 0 && y + dir[1] < n &&
-                       maze[x + dir[0]][y + dir[1]] == 0) {
+                while (x >= 0 && y >= 0 && x < maze.length && y < maze[0].length && maze[x][y] == 0) {
                     x += dir[0];
                     y += dir[1];
                     count++;
                 }
 
-                // If this new path is shorter, update and explore
-                if (distance[curr[0]][curr[1]] + count < distance[x][y]) {
-                    distance[x][y] = distance[curr[0]][curr[1]] + count;
-                    queue.offer(new int[]{x, y});
+                x -= dir[0];
+                y -= dir[1];
+                
+                if (distance[s[0]][s[1]] + count < distance[x - dir[0]][y - dir[1]]) {
+                    distance[x - dir[0]][y - dir[1]] = distance[s[0]][s[1]] + count;
+                    queue.offer(new int[]{x - dir[0], y - dir[1], distance[x - dir[0]][y - dir[1]]});
                 }
             }
         }
-
-        int result = distance[destination[0]][destination[1]];
-        return result == Integer.MAX_VALUE ? -1 : result;
     }
 }
