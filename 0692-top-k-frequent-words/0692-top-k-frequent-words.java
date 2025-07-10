@@ -1,38 +1,31 @@
 class Solution {
-    class Word implements Comparable<Word> {
-        private String word;
-        private int count;
-
-        public Word(String word, int count) {
-            this.word = word;
-            this.count = count;
-        }
-
-        public int compareTo(Word other) {
-            if (this.count == other.count) {
-                return this.word.compareTo(other.word);
-            }
-            return other.count - this.count;
-        }
-    }
-
     public List<String> topKFrequent(String[] words, int k) {
-        Map<String, Integer> cnt = new HashMap<>();
-        for (String word : words) {
-            cnt.put(word, cnt.getOrDefault(word, 0) + 1);
+        TreeMap<String , Integer> map = new TreeMap<>();
+        for(String word:words){
+            map.put(word , map.getOrDefault(word, 0)+1);
+        }
+        
+        PriorityQueue<Integer> maxheap = new PriorityQueue<>(Collections.reverseOrder());
+        for(int n:map.values()){
+            maxheap.add(n);
         }
 
-        List<Word> candidates = new ArrayList<>();
-        for (var entry : cnt.entrySet()) {
-            candidates.add(new Word(entry.getKey(), entry.getValue()));
+        ArrayList<String> list = new ArrayList<>();
+        for(int i=1;i<=k;++i){
+            int n = maxheap.poll();
+            String str = findword(map , n);
+            map.remove(str);
+            list.add(str);
         }
+        return list;
 
-        Queue<Word> h = new PriorityQueue<>(candidates);
-        List<String> res = new ArrayList<>();
-        for (int i = 0; i < k; i++) {
-            res.add(h.poll().word);
+    }
+    public String findword(TreeMap<String ,Integer> map , int n){
+        for(String s:map.keySet()){
+            if(map.get(s)==n){
+                return s;
+            }
         }
-        return res;
-
+        return " ";
     }
 }
