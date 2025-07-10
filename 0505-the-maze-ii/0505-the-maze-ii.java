@@ -17,18 +17,14 @@ public class Solution {
             if(distance[s[0]][s[1]] < s[2])
                 continue;
             for (int[] dir: dirs) {
-                int x = s[0];
-                int y = s[1];
+                int x = s[0] + dir[0];
+                int y = s[1] + dir[1];
                 int count = 0;
                 while (x >= 0 && y >= 0 && x < maze.length && y < maze[0].length && maze[x][y] == 0) {
                     x += dir[0];
                     y += dir[1];
                     count++;
                 }
-
-                x -= dir[0];
-                y -= dir[1];
-                
                 if (distance[s[0]][s[1]] + count < distance[x - dir[0]][y - dir[1]]) {
                     distance[x - dir[0]][y - dir[1]] = distance[s[0]][s[1]] + count;
                     queue.offer(new int[]{x - dir[0], y - dir[1], distance[x - dir[0]][y - dir[1]]});
