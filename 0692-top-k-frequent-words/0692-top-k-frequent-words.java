@@ -6,28 +6,28 @@ class Solution {
             map.put(word, map.getOrDefault(word, 0) + 1);
         }
 
-        PriorityQueue<Map.Entry<String, Integer>> q = new PriorityQueue<>(
+        PriorityQueue<Map.Entry<String, Integer>> minHeap = new PriorityQueue<>(
             (a, b) -> {
-                if (! a.getValue().equals(b.getValue())) {
+                if(!a.getValue().equals(b.getValue())){
                     return a.getValue() - b.getValue();
-                } else {
+                } else{
                     return b.getKey().compareTo(a.getKey());
                 }
             }
         );
 
         for(Map.Entry<String, Integer> entry : map.entrySet()){
-            q.offer(entry);
+            minHeap.offer(entry);
 
-            if(q.size() > k){
-                q.poll();
+            if(minHeap.size() > k){
+                minHeap.poll();
             }
         }
 
         List<String> res = new ArrayList<>();
 
-        while(!q.isEmpty()){
-            res.add(q.poll().getKey());
+        while(!minHeap.isEmpty()){
+            res.add(minHeap.poll().getKey());
         }
 
         Collections.reverse(res);
