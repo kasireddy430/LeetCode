@@ -1,31 +1,40 @@
 class Solution {
     public List<String> topKFrequent(String[] words, int k) {
-        TreeMap<String , Integer> map = new TreeMap<>();
-        for(String word:words){
-            map.put(word , map.getOrDefault(word, 0)+1);
-        }
-        
-        PriorityQueue<Integer> maxheap = new PriorityQueue<>(Collections.reverseOrder());
-        for(int n:map.values()){
-            maxheap.add(n);
+        Map<String, Integer> map = new HashMap<>();
+
+        for(String word : words){
+            map.put(word, map.getOrDefault(word, 0) + 1);
         }
 
-        ArrayList<String> list = new ArrayList<>();
-        for(int i=1;i<=k;++i){
-            int n = maxheap.poll();
-            String str = findword(map , n);
-            map.remove(str);
-            list.add(str);
-        }
-        return list;
+        PriorityQueue<Map.Entry<String, Integer>> q = new PriorityQueue<>(
+            (a, b) -> {
+                if (! a.getValue().equals(b.getValue())) {
+                    return a.getValue() - b.getValue();
+                } else {
+                    return b.getKey().compareTo(a.getKey());
+                }
+            }
+        );
 
-    }
-    public String findword(TreeMap<String ,Integer> map , int n){
-        for(String s:map.keySet()){
-            if(map.get(s)==n){
-                return s;
+        for(Map.Entry<String, Integer> entry : map.entrySet()){
+            q.offer(entry);
+
+            if(q.size() > k){
+                q.poll();
             }
         }
-        return " ";
+
+        List<String> res = new ArrayList<>();
+
+        while(!q.isEmpty()){
+            res.add(q.poll().getKey());
+        }
+
+        Collections.reverse(res);
+
+        return res;
     }
 }
+
+//TC: O(n logk)
+//SC: O(n)
