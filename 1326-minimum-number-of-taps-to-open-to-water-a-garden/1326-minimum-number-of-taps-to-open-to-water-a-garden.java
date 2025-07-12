@@ -2,30 +2,32 @@ class Solution {
     public int minTaps(int n, int[] ranges) {
         int[] maxReach = new int[n + 1];
 
-        // Convert ranges to "jumps" like Jump Game II
-        for (int i = 0; i <= n; i++) {
-            int left = Math.max(0, i - ranges[i]);
-            int right = Math.min(n, i + ranges[i]);
-            maxReach[left] = Math.max(maxReach[left], right - left);
+        for(int i = 0; i < ranges.length; i++){
+            int start = Math.max(0, i - ranges[i]);
+            int end = Math.min(n, i + ranges[i]);
+
+            maxReach[start] = Math.max(maxReach[start], end);
         }
 
-        int res = 0;
-        int l = 0, r = 0;
 
-        while (r < n) {
-            int farthest = 0;
+        int taps = 0;
+        int curEnd = 0;
+        int nextEnd = 0;
 
-            for (int i = l; i <= r; i++) {
-                farthest = Math.max(farthest, i + maxReach[i]);
+        for(int i = 0; i <= n; i++){
+            if(i > nextEnd) return -1;
+
+            if(i > curEnd){
+                taps++;
+                curEnd = nextEnd;
             }
 
-            if (farthest == r) return -1; // stuck
-
-            l = r + 1;
-            r = farthest;
-            res++;
+            nextEnd = Math.max(nextEnd, maxReach[i]);
         }
 
-        return res;
+        return taps;
     }
 }
+
+//TC: O(n)
+//SC: O(n)
