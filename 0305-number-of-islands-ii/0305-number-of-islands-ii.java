@@ -1,41 +1,66 @@
-public class Solution {
-    int[][] dirs = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
+class Solution {
+    private final int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
     public List<Integer> numIslands2(int m, int n, int[][] positions) {
-        List<Integer> result = new ArrayList<>();
-        if(m <= 0 || n <= 0) return result;
+        List<Integer> res = new ArrayList<>();
 
-        int count = 0;                      // number of islands
-        int[] roots = new int[m * n];       // one island = one tree
-        Arrays.fill(roots, -1);            
+        if(m <= 0 || n <= 0){
+            return res;
+        }
 
-        for(int[] p : positions) {
-            int root = n * p[0] + p[1];     // assume new point is isolated island
-            roots[root] = root;             // add new island
+
+        int[] roots = new int[m * n];
+        Arrays.fill(roots, -1);
+        int count = 0;
+
+
+        for(int[] position : positions){
+            int row = position[0];
+            int col = position[1];
+            int index = row * n + col;
+
+            if(roots[index] != -1){
+                res.add(count);
+                continue;
+            }
+
+            roots[index] = index;
             count++;
 
-            for(int[] dir : dirs) {
-                int x = p[0] + dir[0]; 
-                int y = p[1] + dir[1];
-                int nb = n * x + y;
-                if(x < 0 || x >= m || y < 0 || y >= n || roots[nb] == -1) continue;
-                
-                int rootNb = findIsland(roots, nb);
-                if(root != rootNb) {        // if neighbor is in another island
-                    roots[root] = rootNb;   // union two islands 
-                    root = rootNb;          // current tree root = joined tree root
-                    count--;               
+            for(int[] dir : directions){
+                int r = row + dir[0];
+                int c = col + dir[1];
+                int nei = r * n + c;
+
+                if(r < 0 || r >= m || c < 0 || c >= n || roots[nei] == -1){
+                    continue;
+                }
+
+                int root1 = find(roots, index);
+                int root2 = find(roots, nei);
+
+                if(root1 != root2){
+                    roots[root1] = root2;
+                    count--;
                 }
             }
 
-            result.add(count);
+            res.add(count);
         }
-        return result;
+
+        return res;
     }
 
-    public int findIsland(int[] roots, int id) {
-        while(id != roots[id]) id = roots[id];
-        return id;
-    }
 
+    private int find(int[] roots, int i){
+        while(roots[i] != i){
+            roots[i] = roots[roots[i]];
+            i = roots[i];
+        }
+
+        return roots[i];
+    }
 }
+
+//TC: O(k * @(m * n))
+//SC: O(k + m * n)
