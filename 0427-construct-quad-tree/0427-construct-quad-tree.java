@@ -48,10 +48,12 @@ class Solution {
             return new Node(grid[i][j] == 1, true);
         }
 
-        Node topLeft = solve(grid, i, j, length / 2);
-        Node topRight = solve(grid, i, j + length / 2, length / 2);
-        Node bottomLeft = solve(grid, i + length / 2, j, length / 2);
-        Node bottomRight = solve(grid, i + length / 2, j + length / 2, length / 2);
+        int size = length / 2;
+
+        Node topLeft = solve(grid, i, j, size);
+        Node topRight = solve(grid, i, j + size, size);
+        Node bottomLeft = solve(grid, i + size, j, size);
+        Node bottomRight = solve(grid, i + size, j + size, size);
 
         if(topLeft.isLeaf && topRight.isLeaf && bottomLeft.isLeaf && bottomRight.isLeaf &&
         topLeft.val == topRight.val && topRight.val == bottomLeft.val && bottomLeft.val == bottomRight.val){
@@ -63,4 +65,4 @@ class Solution {
 }
 
 //TC: O(n ^ 2)
-//SC: O(log n)
+//SC: O(log n) (O(n ^ 2) if output space is considered).
