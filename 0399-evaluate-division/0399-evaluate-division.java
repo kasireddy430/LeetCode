@@ -1,6 +1,6 @@
 class Solution {
     public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
-        HashMap<String, HashMap<String, Double>> gr = createGraph(equations, values);
+        Map<String, HashMap<String, Double>> gr = createGraph(equations, values);
 
         int n = queries.size();
         double[] cur = new double[n];
