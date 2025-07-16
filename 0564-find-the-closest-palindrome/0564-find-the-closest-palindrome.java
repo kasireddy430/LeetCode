@@ -4,8 +4,8 @@ class Solution {
         if(number <= 10) return String.valueOf(number - 1);
         if(number == 11) return "9";
 
-        int length = numberStr.length();
-        long leftHalf = Long.parseLong(numberStr.substring(0, (length + 1)/2));
+        long length = numberStr.length();
+        long leftHalf = Long.parseLong(numberStr.substring(0, (length + 1)/2.0));
 
         long[] palindromeCandidate = new long[5];
 
