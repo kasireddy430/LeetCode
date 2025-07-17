@@ -1,42 +1,42 @@
 class Solution {
     public List<String> restoreIpAddresses(String s) {
-        List<String> ans=new ArrayList<>();
-        List<String> temp=new ArrayList<>();
-        helper(s,ans,0,new ArrayList<>());
-        return ans;
+        List<String> res = new ArrayList<>();
+
+        if(s.length() > 12 || s.length() < 4){
+            return res;
+        }
+
+        backtrack(s, 0, 0, "", res);
+
+        return res;
     }
-    public static void helper(String s,List<String> ans,int idx,List<String> temp){
-        if(temp.size()>4){
+
+    private void backtrack(String s, int i, int dots, String curString, List<String> res){
+        if(dots == 4 && i == s.length()){
+            res.add(curString.substring(0, curString.length() - 1));
             return;
         }
-        if(idx==s.length() && temp.size()==4){
-            //for(int j=0;j<temp.size();j++){
-            //    sb.append(temp.get(j)).append((j!=3)?".":"");
-            //}
-            //ans.add(sb.toString());
-            //sb.delete(0,sb.length());
-            //return;
-            ans.add(String.join(".",temp));
+
+        if(dots >= 4){
             return;
         }
-        for(int i=idx;i<s.length();i++){
-            if(isValid(s.substring(idx,i+1))){
-                temp.add(s.substring(idx,i+1));
-                helper(s,ans,i+1,temp);
-                temp.remove(temp.size()-1);
+
+        for(int j = i; j < i + 3 && j < s.length(); j++){
+            String segment = s.substring(i, j + 1);
+            if(isValidSegment(segment)){
+                backtrack(s, j + 1, dots + 1, curString + segment + ".", res);;
             }
         }
     }
-    public static boolean isValid(String s){
-        if(s.length()>3 || (s.length()>1 && s.charAt(0)=='0')){
+
+    private boolean isValidSegment(String cur){
+        if(cur.length() > 1 && cur.startsWith("0")){
             return false;
         }
-        if(Integer.parseInt(s)>255){
-            return false;
-        }
-        return true;
+        int val = Integer.parseInt(cur);
+        return val >= 0 && val <= 255; 
     }
 }
 
-//TC: O(1)
-//SC: O(k) number of valid IP's
+//Time Complexity: O(1) . O(3 ^ 4)
+//SC: O(1)
