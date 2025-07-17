@@ -1,38 +1,23 @@
 class Solution {
-    private List<String> ipes;
-   private int l;
-   public List<String> restoreIpAddresses(String s) {
-       ipes = new ArrayList<>();
-       l = s.length();
-       f(s, 0, "", 0);
-       return ipes;
-   }
-   
-   private boolean isIp(String ip){
-       if(ip.length() > 3 || ip.length() == 0) return false;
-       if(ip.length() > 1 && ip.charAt(0) == '0') return false;
-       if(ip.length() > 0 && Integer.parseInt(ip) > 255) return false;
-       return true; 
-   }
+    public List<String> restoreIpAddresses(String s) {
+        List<String> res = new ArrayList<>();
+        if (s.length() > 12) return res;
 
-   private void f(String s, int index, String ip, int dot){
-       //base case
-       if(dot == 3){
-           if(isIp(s.substring(index))) {
-               ip += s.substring(index);
-               ipes.add(ip);
-           }
-           return;
-       }
+        backtrack(s, 0, 0, "", res);
+        return res;
+    }
+    
+    public void backtrack(String s, int i, int dots, String currIp, List<String> res) {
+        if (dots == 4 && i == s.length()) {
+            res.add(currIp.substring(0, currIp.length() - 1));
+            return;
+        }
+        if (dots > 4) return;
 
-       //do all the stuff
-       for(int i = index; i < l; i++){
-           if(isIp(s.substring(index, i +1))){
-               int k = s.substring(index, i+1).length();
-               ip += s.substring(index, i+1) + ".";
-               f(s, i+1, ip, dot+1);
-               ip = ip.substring(0, ip.length() - k -1);
-           }
-       }
-   }
+        for (int j = i; j < Math.min(i+3, s.length()); j++) {
+            if (Integer.parseInt(s.substring(i, j+1)) < 256 && (i == j || s.charAt(i) != '0')) {
+                backtrack(s, j+1, dots+1, currIp + s.substring(i, j+1) + ".", res);
+            }
+        }
+    }
 }
