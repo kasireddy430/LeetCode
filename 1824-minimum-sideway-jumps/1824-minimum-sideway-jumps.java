@@ -1,27 +1,24 @@
 class Solution {
     public int minSideJumps(int[] obstacles) {
-        int n = obstacles.length;
-        int[] dp = new int[3];
-        dp[0] = 1;
-        dp[1] = 0;
-        dp[2] = 1;
+        int[] dp = new int[]{1, 0, 1};
 
-        for (int i = 1; i < n; i++) {
-           
-            for (int j = 0; j < 3; j++) {
-                if (obstacles[i] == j + 1) {
-                    dp[j] = Integer.MAX_VALUE;
-                }
+        for(int obstacle : obstacles){
+            if(obstacle > 0){
+                dp[obstacle - 1] = Integer.MAX_VALUE;
             }
-            
-            for (int j = 0; j < 3; j++) {
-                if (obstacles[i] != j + 1) {
-                    dp[j] = Math.min(dp[j], Math.min((dp[(j + 1) % 3] == Integer.MAX_VALUE ? Integer.MAX_VALUE : dp[(j + 1) % 3] + 1),
-                                                      (dp[(j + 2) % 3] == Integer.MAX_VALUE ? Integer.MAX_VALUE : dp[(j + 2) % 3] + 1)));
+
+            for(int i = 0; i < 3; i++){
+                if(obstacle - 1 != i){
+                    dp[i] = Math.min(dp[i], Math.min(dp[(i + 1) % 3] == Integer.MAX_VALUE ? Integer.MAX_VALUE : dp[(i + 1) % 3] + 1,
+                                            dp[(i + 2) % 3] == Integer.MAX_VALUE ? Integer.MAX_VALUE : dp[(i + 2) % 3] + 1));
                 }
             }
         }
-        
+
         return Math.min(dp[0], Math.min(dp[1], dp[2]));
     }
 }
+
+//TC: O(n)
+//SC: O(1)
+
