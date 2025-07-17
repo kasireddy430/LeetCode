@@ -1,6 +1,6 @@
 class Solution {
     public boolean isValidSudoku(char[][] board) {
-        //Create hashmap's for each of the rows, columns and 3*3 squres to stores characters from the input 9*9 grid
+        //Create hashmap's to store characters from rows, columns and 3*3 squares
         Map<Integer, Set<Character>> rows = new HashMap<>();
         Map<Integer, Set<Character>> cols = new HashMap<>();
         Map<Integer, Set<Character>> squares = new HashMap<>();
@@ -10,7 +10,7 @@ class Solution {
             for(int j = 0 ; j < 9 ; j++){
                 char cell = board[i][j];
 
-                //Check if cell is '#'
+                //Check if cell is vali or not
                 if(cell == '.'){
                     continue;
                 }
@@ -30,7 +30,6 @@ class Solution {
                 rows.computeIfAbsent(i, k -> new HashSet<>()).add(cell);
                 cols.computeIfAbsent(j, k -> new HashSet<>()).add(cell);
                 squares.computeIfAbsent(index, k -> new HashSet<>()).add(cell);
-
             }
         }
 
@@ -38,6 +37,3 @@ class Solution {
         return true;
     }
 }
-
-//Time Complexity: O(1)
-//Space COmplexity: O(1).fixed space for the hashmaps
