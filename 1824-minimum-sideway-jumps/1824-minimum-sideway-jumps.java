@@ -1,6 +1,6 @@
 class Solution {
     public int minSideJumps(int[] obstacles) {
-         int[] dp = new int[]{1, 0, 1};
+         int[] dp = new int[]{1, 0, 2};
         for (int a: obstacles) {
             if (a > 0)
                 dp[a - 1] = 1000000;
