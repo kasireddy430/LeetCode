@@ -37,3 +37,6 @@ class Solution {
         return true;
     }
 }
+
+//Time Complexity: O(1)
+//Space COmplexity: O(1).fixed space for the hashmaps
