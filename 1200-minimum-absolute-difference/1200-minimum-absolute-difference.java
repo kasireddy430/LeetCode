@@ -11,12 +11,9 @@ class Solution {
         }
 
         for(int i = 0; i < n - 1; i++){
-            List<Integer> list = new ArrayList<>();
 
             if(arr[i + 1] - arr[i] == min){
-                list.add(arr[i]);
-                list.add(arr[i + 1]);
-                res.add(list);
+                res.add(Arrays.asList(arr[i], arr[i + 1]));
             }
             
         }
