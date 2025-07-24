@@ -44,5 +44,5 @@ class Solution {
     }
 }
 
-//Time Complexity: O(n)
-//Space Complexity: O(n)
+//Time Complexity: O(m + n)
+//Space Complexity: O(m + n)
