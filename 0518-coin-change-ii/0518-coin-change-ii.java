@@ -1,10 +1,13 @@
 public class Solution {
     public int change(int amount, int[] coins) {
-        int[] dp = new int[amount + 1]; 
+        int[] dp = new int[amount + 1];
         dp[0] = 1;
-        for (int i = coins.length - 1; i >= 0; i--)
-            for (int a = 1; a <= amount; a++) 
-                dp[a] = dp[a] + (coins[i] <= a ? dp[a - coins[i]] : 0);
-        return dp[amount]; 
+
+        for (int coin : coins) {                 // Loop coins outer
+            for (int a = coin; a <= amount; a++) // Left to right!
+                dp[a] += dp[a - coin];
+        }
+
+        return dp[amount];
     }
 }
