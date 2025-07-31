@@ -28,10 +28,25 @@ class TimeMap {
         }
         return result;
     }
-}
 
-//TC: O(1) for set and O(log n) for get
-//SC: O(m * n). where m - no.of keys and n - no.of values associated with keys
+    private static class Pair<K, V>{
+        private final K key;
+        private final V value;
+
+        public Pair(K key, V value){
+            this.key = key;
+            this.value = value;
+        }
+
+        public K getKey(){
+            return key;
+        }
+
+        public V getValue(){
+            return value;
+        }
+    }
+}
 
 /**
  * Your TimeMap object will be instantiated and called as such:
