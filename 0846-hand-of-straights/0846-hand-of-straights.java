@@ -23,7 +23,7 @@ class Solution {
 
                 //Decrement the count frequency, since the card is used to form group
                 count.put(i, count.get(i) - 1);
-                //Remove vard from TreeMap if count reaches 0
+                //Remove card from TreeMap if count reaches 0
                 if(count.get(i)==0){
                     count.remove(i);
                 }
