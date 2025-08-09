@@ -1,29 +1,36 @@
 class Solution {
     public int largest1BorderedSquare(int[][] grid) {
         int m = grid.length, n = grid[0].length;
-        int[][] left = new int[m][n], top = new int[m][n];
-        int res = 0;
+        int[][] hor = new int[m][n]; 
+        int[][] ver = new int[m][n];  
+        int max = 0;
+
+        
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                if (i == 0) {
-                    top[i][j] = grid[i][j];
-                } else {
-                    top[i][j] = grid[i][j] == 0? 0 : top[i-1][j] + 1;
-                }
-                if (j == 0) {
-                    left[i][j] = grid[i][j];
-                } else {
-                    left[i][j] = grid[i][j] == 0? 0 : left[i][j-1] + 1;
-                }
-                for (int l = Math.min(top[i][j], left[i][j]); l >= 1; l--) {
-				// 已知下面的边和右侧边合法，看上边和左侧边是否合法
-                    if (left[i-l+1][j] >= l && top[i][j-l+1] >= l) {
-                        res = Math.max(res, l * l);
-                        break;
-                    }
+                if (grid[i][j] == 1) {
+                    hor[i][j] = (j == 0 ? 0 : hor[i][j - 1]) + 1;
+                    ver[i][j] = (i == 0 ? 0 : ver[i - 1][j]) + 1;
                 }
             }
         }
-        return res;
+
+        
+        for (int i = m - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
+                int small = Math.min(hor[i][j], ver[i][j]);
+
+                while (small > max) {
+                     
+                     
+                    if (ver[i][j - small + 1] >= small && hor[i - small + 1][j] >= small) {
+                        max = small;
+                    }
+                    small--;
+                }
+            }
+        }
+
+        return max * max;  
     }
 }
