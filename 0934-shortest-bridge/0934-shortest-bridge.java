@@ -1,61 +1,53 @@
 class Solution {
-    private static final int ISLAND = 1;
-    private static final int VISITED_ISLAND = 2;
-    private static final int VISITED_WATER = -1;
-    private static final int WATER = 0;
-    
-    private static final int[][] DIRECTIONS = {
-        {0, 1}, {1, 0}, {-1, 0}, {0, -1}
-    };
-    
-    private void dfs(int[][] grid, int i, int j, Queue<int[]> queue) {
-        if (i < 0 || i >= grid.length || j < 0 || j >= grid[0].length || grid[i][j] != ISLAND) {
-            return;
-        }
-        
-        grid[i][j] = VISITED_ISLAND; // Mark before adding
-        queue.offer(new int[]{i, j, 0});
-        
-        for (int[] dir : DIRECTIONS) {
-            dfs(grid, i + dir[0], j + dir[1], queue);
-        }
-    }
+  private int n;
+  private int[][] moves = new int[][] {{-1,0}, {1,0}, {0,-1}, {0,1}};
+  private Queue<int[]> queue = new ArrayDeque<>();
 
-    public int shortestBridge(int[][] grid) {
-        int rows = grid.length, cols = grid[0].length;
-        Queue<int[]> queue = new LinkedList<>();
-        
-        // Find first island
-        boolean found = false;
-        for (int i = 0; i < rows && !found; i++) {
-            for (int j = 0; j < cols && !found; j++) {
-                if (grid[i][j] == ISLAND) {
-                    dfs(grid, i, j, queue);
-                    found = true;
-                }
-            }
-        }
+  private void discoverIsland(int[][] grid, int x, int y) {
+    grid[x][y] = 2;
+    queue.add(new int[] {x, y});
 
-        // BFS to expand over water
-        while (!queue.isEmpty()) {
-            int[] cell = queue.poll();
-            int x = cell[0], y = cell[1], steps = cell[2];
-            
-            for (int[] dir : DIRECTIONS) {
-                int newX = x + dir[0];
-                int newY = y + dir[1];
-                
-                if (newX >= 0 && newX < rows && newY >= 0 && newY < cols) {
-                    if (grid[newX][newY] == ISLAND) {
-                        return steps; // Found second island
-                    }
-                    if (grid[newX][newY] == WATER) {
-                        grid[newX][newY] = VISITED_WATER;
-                        queue.offer(new int[]{newX, newY, steps + 1});
-                    }
-                }
-            }
-        }
-        return 0; // Should never happen for valid inputs
+    for (var move : moves) {
+      var x2 = x + move[0];
+      var y2 = y + move[1];
+
+      if (x2 >= 0 && x2 < n && y2 >= 0 && y2 < n)
+        if (grid[x2][y2] == 1)
+          discoverIsland(grid, x2, y2);
     }
+  }
+
+  public int shortestBridge(int[][] grid) {
+    n = grid.length;
+    int x = 0, y = 0;
+    var br = false;
+
+    for (x=0; x<n && !br; x++) {
+      for (y=0; y<n && !br; y++) {
+        if (grid[x][y] == 1) {
+          discoverIsland(grid, x, y);
+          br = true;
+        }
+      }
+    }
+    for (var cnt = 0; ; cnt++) {
+      for (var i = queue.size(); i > 0; i--) {
+        var pos = queue.poll();
+
+        for (var move : moves) {
+          var x2 = pos[0] + move[0];
+          var y2 = pos[1] + move[1];
+
+          if (x2 >= 0 && x2 < n && y2 >= 0 && y2 < n) {
+            if (grid[x2][y2] == 1)
+              return cnt;
+            else if (grid[x2][y2] == 0) {
+              queue.add(new int[] {x2, y2});
+              grid[x2][y2] = -1;
+            }
+          }
+        }
+      }
+    }
+  }
 }
