@@ -1,55 +1,56 @@
 class Solution {
     public int openLock(String[] deadends, String target) {
-        Set<String> dead = new HashSet<>(Arrays.asList(deadends));
-        if (dead.contains("0000")) return -1;
+        Set<String> set = new HashSet<>(Arrays.asList(deadends));
+        if(set.contains("0000")){
+            return -1;
+        } 
 
-        Queue<String> queue = new LinkedList<>();
+        Queue<String> q = new LinkedList<>();
         Set<String> visited = new HashSet<>();
 
-        queue.offer("0000");
+        q.offer("0000");
         visited.add("0000");
         int level = 0;
 
-        while (!queue.isEmpty()) {
-            int size = queue.size();
+        while(!q.isEmpty()){
+            int size = q.size();
 
-            for (int i = 0; i < size; i++) {
-                String curr = queue.poll();
-                if (curr.equals(target)) return level;
+            for(int i = 0; i < size; i++){
+                String cur = q.poll();
 
-                for (String next : getNextStates(curr)) {
-                    if (!dead.contains(next) && !visited.contains(next)) {
-                        queue.offer(next);
+                if(cur.equals(target)){
+                    return level;
+                }
+
+                for(String next : getNextState(cur)){
+                    if(!set.contains(next) && !visited.contains(next)){
+                        q.offer(next);
                         visited.add(next);
                     }
-                }
+                } 
             }
-
             level++;
         }
 
         return -1;
     }
 
-    private List<String> getNextStates(String s) {
-        List<String> result = new ArrayList<>();
-        char[] chars = s.toCharArray();
+    private List<String> getNextState(String cur){
+        List<String> res = new ArrayList<>();
+        char[] c = cur.toCharArray();
 
-        for (int i = 0; i < 4; i++) {
-            char original = chars[i];
+        for(int i = 0; i < 4; i++){
+            char original = c[i]; 
 
-            // Rotate up
-            chars[i] = (original == '9') ? '0' : (char)(original + 1);
-            result.add(new String(chars));
+            c[i] = (original == '9') ? '0' : (char)(original + 1);
+            res.add(new String(c));
 
-            // Rotate down
-            chars[i] = (original == '0') ? '9' : (char)(original - 1);
-            result.add(new String(chars));
+            c[i] = (original == '0') ? '9' : (char)(original - 1);
+            res.add(new String(c));
 
-            // Restore
-            chars[i] = original;
+            c[i] = original;
         }
 
-        return result;
+        return res;
     }
 }
