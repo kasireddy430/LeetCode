@@ -1,43 +1,36 @@
-public class Solution {
+class Solution {
     public List<String> fullJustify(String[] words, int maxWidth) {
-        List<String> res = new ArrayList<>();
-        List<String> curWords = new ArrayList<>();
-        int curLen = 0;
-
-        for (String word : words) {
-            if (curLen + word.length() + curWords.size() > maxWidth) {
-                int totalSpaces = maxWidth - curLen;
-                int gaps = curWords.size() - 1;
-                if (gaps == 0) {
-                    res.add(curWords.get(0) + " ".repeat(totalSpaces));
-                } else {
-                    int spacePerGap = totalSpaces / gaps;
-                    int extraSpaces = totalSpaces % gaps;
-                    StringBuilder line = new StringBuilder();
-                    for (int i = 0; i < curWords.size(); i++) {
-                        line.append(curWords.get(i));
-                        if (i < gaps) {
-                            line.append(" ".repeat(spacePerGap));
-                            if (i < extraSpaces) {
-                                line.append(' ');
-                            }
-                        }
-                    }
-                    res.add(line.toString());
-                }
-                curWords.clear();
-                curLen = 0;
+        List<String> result = new ArrayList<>();
+        int i = 0;
+        while (i < words.length) {
+            int j = i, len = 0;
+            while (j < words.length && len + words[j].length() + (j - i) <= maxWidth) {
+                len += words[j].length();
+                j++;
             }
-            curWords.add(word);
-            curLen += word.length();
-        }
+            int gaps = j - i - 1;
+            int spaces = maxWidth - len;
+            StringBuilder line = new StringBuilder();
 
-        StringBuilder lastLine = new StringBuilder(String.join(" ", curWords));
-        while (lastLine.length() < maxWidth) {
-            lastLine.append(' ');
+            if (j == words.length || gaps == 0) {
+                for (int k = i; k < j; k++) {
+                    line.append(words[k]);
+                    if (k != j - 1) line.append(" ");
+                }
+                while (line.length() < maxWidth) line.append(" ");
+            } else {
+                int spaceEach = spaces / gaps, extra = spaces % gaps;
+                for (int k = i; k < j; k++) {
+                    line.append(words[k]);
+                    if (k != j - 1) {
+                        int toAdd = spaceEach + (extra-- > 0 ? 1 : 0);
+                        line.append(" ".repeat(toAdd));
+                    }
+                }
+            }
+            result.add(line.toString());
+            i = j;
         }
-        res.add(lastLine.toString());
-
-        return res;
+        return result;
     }
 }
