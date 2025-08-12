@@ -8,6 +8,7 @@ class Solution {
                 len += words[j].length();
                 j++;
             }
+            
             int gaps = j - i - 1;
             int spaces = maxWidth - len;
             StringBuilder line = new StringBuilder();
@@ -22,8 +23,12 @@ class Solution {
                 int spaceEach = spaces / gaps, extra = spaces % gaps;
                 for (int k = i; k < j; k++) {
                     line.append(words[k]);
-                    if (k != j - 1) {
-                        int toAdd = spaceEach + (extra-- > 0 ? 1 : 0);
+                    if (k != j - 1) { // if not last word
+                        int toAdd = spaceEach;
+                        if (extra > 0) {   // still have extra spaces to distribute
+                            toAdd += 1;
+                            extra--;
+                        }
                         line.append(" ".repeat(toAdd));
                     }
                 }
