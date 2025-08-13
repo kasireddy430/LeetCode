@@ -1,21 +1,20 @@
 class Solution {
-    public int largestSumAfterKNegations(int[] A, int K) {
-        Arrays.sort(A);
-        int sum = 0;
-        if (A[0] >= 0 && K % 2 != 0) {
-            A[0] = - A[0];
-        } else if (A[0] < 0 ) { //&& K % 2 == 0) {
-            int change = 0;
-            while (K > 0  && change < A.length && A[change] < 0) {
-                A[change] = - A[change++];
-                K--;
-            }
-            if (K % 2 != 0) {
-                int index = change < A.length && A[change] < A[change - 1] ? change : change - 1;
-                A[index] = - A[index];
+    public int largestSumAfterKNegations(int[] nums, int k) {
+        Arrays.sort(nums);
+        for(int i=0; i<nums.length && k>0; i++){
+            if(nums[i] < 0){
+                nums[i] = nums[i]*-1;
+                k--;
             }
         }
-        for (int val : A) sum += val;
-        return sum;
+        Arrays.sort(nums);
+        if(k%2==1){
+            nums[0] = -nums[0];
+        }
+        int count = 0;
+        for(int i=0; i<nums.length; i++){
+            count += nums[i];
+        }
+        return count;
     }
 }
