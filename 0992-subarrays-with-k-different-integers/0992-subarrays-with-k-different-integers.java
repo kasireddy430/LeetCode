@@ -1,36 +1,29 @@
 class Solution {
     public int subarraysWithKDistinct(int[] nums, int k) {
-        return countSubarraysWithAtMostKDistinct(nums, k) 
-             - countSubarraysWithAtMostKDistinct(nums, k - 1);
+        int subWithMaxK = subarrayWithAtMostK(nums, k);
+        int reducedSubWithMaxK = subarrayWithAtMostK(nums, k - 1);
+        return subWithMaxK - reducedSubWithMaxK;
     }
-
-    private int countSubarraysWithAtMostKDistinct(int[] nums, int k) {
-        int n = nums.length;
-        int left = 0;
-        int right = 0;
-        int[] frequency = new int[n + 2]; // works only if nums[i] <= n
-        int distinctCount = 0;
-        int totalSubarrays = 0;
-
-        while (right < n) {
-            if (frequency[nums[right]] == 0) {
-                distinctCount++;
-            }
-            frequency[nums[right]]++;
-
-            while (distinctCount > k) {
-                frequency[nums[left]]--;
-                if (frequency[nums[left]] == 0) {
-                    distinctCount--;
+    
+    public int subarrayWithAtMostK(int[] nums, int k) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        int left = 0, right = 0, ans = 0;
+        
+        while (right < nums.length) {
+            map.put(nums[right], map.getOrDefault(nums[right], 0) + 1);
+            
+            while (map.size() > k) {
+                map.put(nums[left], map.get(nums[left]) - 1);
+                if (map.get(nums[left]) == 0) {
+                    map.remove(nums[left]);
                 }
                 left++;
             }
-
-            // All subarrays ending at 'right' with start >= left are valid
-            totalSubarrays += (right - left + 1);
+            
+            ans += right - left + 1; // Size of subarray
             right++;
         }
-
-        return totalSubarrays;
+        
+        return ans;
     }
 }
