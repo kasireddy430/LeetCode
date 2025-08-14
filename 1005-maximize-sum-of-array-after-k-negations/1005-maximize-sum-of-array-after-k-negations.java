@@ -8,7 +8,7 @@ class Solution {
             }
         }
         Arrays.sort(nums);
-        if(k%2==1){
+        if(k%2 != 0){
             nums[0] = -nums[0];
         }
         int count = 0;
