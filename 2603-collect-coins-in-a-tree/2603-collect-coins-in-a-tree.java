@@ -7,7 +7,7 @@ class Solution {
         int[] degree = new int[n];
 
         // Initialize each list inside the outer list
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i < n; i++) {
             tree.add(new ArrayList<>());
         }
 
@@ -75,3 +75,6 @@ class Solution {
         return edgeCount;
     }
 }
+
+//TC: O(n)
+//SC: O(n)
