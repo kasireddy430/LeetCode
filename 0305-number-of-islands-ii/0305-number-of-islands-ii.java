@@ -8,7 +8,6 @@ class Solution {
             return res;
         }
 
-
         int[] roots = new int[m * n];
         Arrays.fill(roots, -1);
         int count = 0;
