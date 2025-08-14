@@ -11,7 +11,7 @@ class HitCounter {
     }
     
     public int getHits(int timestamp) {
-        while(!timeQueue.isEmpty() && timeQueue.peek() + 300 <= timestamp){
+        while(!timeQueue.isEmpty() && timeQueue.peek()<= timestamp - 300){
             timeQueue.poll();
         }
 
