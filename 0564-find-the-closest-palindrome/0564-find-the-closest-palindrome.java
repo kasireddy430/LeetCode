@@ -4,36 +4,38 @@ class Solution {
         if(number <= 10) return String.valueOf(number - 1);
         if(number == 11) return "9";
 
+        long[] palindromeCandidate = new long[5];
+
         int length = numberStr.length();
         long leftHalf = Long.parseLong(numberStr.substring(0, (length + 1)/2));
 
-        long[] palindromeCandidate = new long[5];
+        palindromeCandidate[0] = generatePalindrome(leftHalf, length % 2 == 0);
+        palindromeCandidate[1] = generatePalindrome(leftHalf + 1, length % 2 == 0);
+        palindromeCandidate[2] = generatePalindrome(leftHalf - 1, length % 2 == 0);
+        palindromeCandidate[3] = (long) Math.pow(10, length) + 1;
+        palindromeCandidate[4] = (long) Math.pow(10, length - 1) - 1;
 
-        palindromeCandidate[0] = generatepalindrome(leftHalf, length % 2 == 0);
-        palindromeCandidate[1] = generatepalindrome(leftHalf - 1, length % 2 == 0);
-        palindromeCandidate[2] = generatepalindrome(leftHalf + 1, length % 2 == 0);
-        palindromeCandidate[3] = (long)Math.pow(10, length) + 1;
-        palindromeCandidate[4] = (long)Math.pow(10, length - 1) - 1;
-
-        long result = 0;
+        long res = 0;
         long minDifference = Long.MAX_VALUE;
-        for(long candidate : palindromeCandidate){
+
+        for(long candidate: palindromeCandidate){
             if(candidate == number) continue;
             long difference = Math.abs(number - candidate);
-            if(difference < minDifference || (difference == minDifference && candidate < result)){
-                result = candidate;
+
+            if(difference < minDifference || (difference == minDifference && candidate < res)){
+                res = candidate;
                 minDifference = difference;
             }
         }
 
-        return String.valueOf(result);
+        return String.valueOf(res);
     }
 
-    private long generatepalindrome(long leftHalf, boolean isEven){
+    private long generatePalindrome(long leftHalf, boolean isEven){
         long palindrome = leftHalf;
         if(!isEven) leftHalf /= 10;
         while(leftHalf != 0){
-            palindrome = palindrome * 10 + leftHalf % 10;
+            palindrome = (palindrome * 10) + (leftHalf % 10);
             leftHalf /= 10;
         }
 
