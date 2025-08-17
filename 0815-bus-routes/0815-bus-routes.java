@@ -6,8 +6,8 @@ class Solution {
 
         Map<Integer, List<Integer>> stopToBuses = new HashMap<>();
 
-        int busesCount = routes.length;
-        for(int bus = 0; bus < busesCount; bus++){
+        int busCount = routes.length;
+        for(int bus = 0; bus < busCount; bus++){
             for(int stop : routes[bus]){
                 stopToBuses.putIfAbsent(stop, new ArrayList<>());
                 stopToBuses.get(stop).add(bus);
@@ -18,16 +18,15 @@ class Solution {
             return -1;
         }
 
-        int buses = 0;
         Queue<Integer> q = new LinkedList<>();
-        Set<Integer> visitedBuses = new HashSet<>();
         Set<Integer> visitedStops = new HashSet<>();
+        Set<Integer> visitedBuses = new HashSet<>();
 
-        q.offer(source);
+        q.add(source);
         visitedStops.add(source);
+        int busses = 0;
 
         while(!q.isEmpty()){
-            buses++;
             int size = q.size();
 
             for(int i = 0; i < size; i++){
@@ -37,20 +36,25 @@ class Solution {
                     if(visitedBuses.contains(bus)){
                         continue;
                     }
+
                     visitedBuses.add(bus);
 
                     for(int nextStop : routes[bus]){
                         if(nextStop == target){
-                            return buses;
+                            return busses + 1;
                         }
+
                         if(!visitedStops.contains(nextStop)){
+                            q.offer(nextStop);
                             visitedStops.add(nextStop);
-                            q.add(nextStop);
                         }
                     }
                 }
             }
+
+            busses++;
         }
+
         return -1;
     }
 }
