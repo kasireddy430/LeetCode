@@ -1,11 +1,11 @@
 class Solution {
     public String alienOrder(String[] words) {
-        Map<Character, Set<Character>> adj = new HashMap<>();
+        Map<Character, Set<Character>> map = new HashMap<>();
         Map<Character, Integer> inDegree = new HashMap<>();
 
         for(String word : words){
             for(char c : word.toCharArray()){
-                adj.putIfAbsent(c, new HashSet<>());
+                map.putIfAbsent(c, new HashSet<>());
                 inDegree.putIfAbsent(c, 0);
             }
         }
@@ -20,10 +20,10 @@ class Solution {
                 return "";
             }
 
-            for(int j = 0; j < minLen;j++){
+            for(int j = 0; j < minLen; j++){
                 if(w1.charAt(j) != w2.charAt(j)){
-                    if(!adj.get(w1.charAt(j)).contains(w2.charAt(j))){
-                        adj.get(w1.charAt(j)).add(w2.charAt(j));
+                    if(!map.get(w1.charAt(j)).contains(w2.charAt(j))){
+                        map.get(w1.charAt(j)).add(w2.charAt(j));
                         inDegree.put(w2.charAt(j), inDegree.get(w2.charAt(j)) + 1);
                     }
                     break;
@@ -33,9 +33,9 @@ class Solution {
 
         Queue<Character> q = new LinkedList<>();
 
-        for(char c : inDegree.keySet()){
-            if(inDegree.get(c) == 0){
-                q.offer(c);
+        for(char ch : inDegree.keySet()){
+            if(inDegree.get(ch) == 0){
+                q.offer(ch);
             }
         }
 
@@ -43,9 +43,10 @@ class Solution {
 
         while(!q.isEmpty()){
             char _ch = q.poll();
+
             res.append(_ch);
 
-            for(char c : adj.get(_ch)){
+            for(char c : map.get(_ch)){
                 inDegree.put(c, inDegree.get(c) - 1);
 
                 if(inDegree.get(c) == 0){
@@ -57,11 +58,7 @@ class Solution {
         if(res.length() != inDegree.size()){
             return "";
         }
-        
-        return res.toString();
 
+        return res.toString();
     }
 }
-
-//TC : O(V + E + N)
-//SC : O(V + E)
