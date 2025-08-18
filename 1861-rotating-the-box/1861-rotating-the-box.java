@@ -1,23 +1,23 @@
 class Solution {
     public char[][] rotateTheBox(char[][] box) {
-        int ROWS = box.length;
-        int COLS = box[0].length;
+        int m = box.length;
+        int n = box[0].length;
 
-        char[][] res = new char[COLS][ROWS];
+        char[][] res = new char[n][m];
 
         for(char[] row : res){
             Arrays.fill(row, '.');
         }
 
-        for(int r = 0; r < ROWS; r++){
-            int i = COLS - 1;
+        for(int r = 0; r < m; r++){
+            int i = n - 1;
 
-            for(int c = COLS - 1; c >= 0 ;c--){
+            for(int c = n - 1; c >= 0; c--){
                 if(box[r][c] == '#'){
-                    res[i][ROWS - r - 1] = '#';
-                    i--;
+                   res[i][m - r - 1] = '#';
+                   i--; 
                 } else if(box[r][c] == '*'){
-                    res[c][ROWS - r - 1] = '*';
+                    res[c][m - r - 1] = '*';
                     i = c - 1;
                 }
             }
