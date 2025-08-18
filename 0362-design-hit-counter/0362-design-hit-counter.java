@@ -3,15 +3,15 @@ class HitCounter {
     Queue<Integer> timeQueue;
 
     public HitCounter() {
-        timeQueue = new LinkedList();
+        timeQueue = new LinkedList<>();
     }
     
     public void hit(int timestamp) {
-        timeQueue.add(timestamp);
+        timeQueue.offer(timestamp);
     }
     
     public int getHits(int timestamp) {
-        while(!timeQueue.isEmpty() && timeQueue.peek()<= timestamp - 300){
+        while(!timeQueue.isEmpty() && timeQueue.peek() <= timestamp - 300){
             timeQueue.poll();
         }
 
