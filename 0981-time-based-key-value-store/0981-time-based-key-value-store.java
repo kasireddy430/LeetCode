@@ -29,7 +29,7 @@ class TimeMap {
         return result;
     }
 
-    private static class Pair<K, V>{
+    private class Pair<K, V>{
         private K key;
         private V value;
 
