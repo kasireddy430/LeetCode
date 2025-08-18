@@ -1,4 +1,5 @@
 class Solution {
+
     private int[] array;
     private int[] original;
 
@@ -35,8 +36,8 @@ class Solution {
     }
 }
 
-//TC:
-//SC:
+//TC: O(n)
+//SC: O(n)
 
 /**
  * Your Solution object will be instantiated and called as such:
