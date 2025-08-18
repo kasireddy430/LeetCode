@@ -48,15 +48,15 @@ class Solution {
             return new Node(grid[i][j] == 1, true);
         }
 
-        int size = length / 2;
-
+        int size = length/2;
         Node topLeft = solve(grid, i, j, size);
         Node topRight = solve(grid, i, j + size, size);
         Node bottomLeft = solve(grid, i + size, j, size);
         Node bottomRight = solve(grid, i + size, j + size, size);
 
-        if(topLeft.isLeaf && topRight.isLeaf && bottomLeft.isLeaf && bottomRight.isLeaf &&
-        topLeft.val == topRight.val && topRight.val == bottomLeft.val && bottomLeft.val == bottomRight.val){
+        if(topLeft.val == topRight.val && topRight.val == bottomLeft.val &&
+        bottomLeft.val == bottomRight.val && topLeft.isLeaf && topRight.isLeaf &&
+        bottomLeft.isLeaf && bottomRight.isLeaf){
             return new Node(topLeft.val, true);
         }
 
