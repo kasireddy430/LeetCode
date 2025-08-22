@@ -1,36 +1,57 @@
+/**
+ * Simulate Diagonal Order Traversal
+ *
+ * r+c determines which diagonal you are on. For ex: [2,0],[1,1],[0,2] are all
+ * on same diagonal with r+c =2. If you check the directions of diagonals, first
+ * diagonal is up, second diagonal is down, third one is up and so on..
+ * Therefore (r+c)%2 simply determines direction. Even is UP direction. Odd is
+ * DOWN direction.
+ *
+ * Time Complexity: O(M*N)
+ *
+ * Space Complexity: O(1) without considering result space.
+ *
+ * M = Number of rows. N = Number of columns.
+ */
 class Solution {
-    public int[] findDiagonalOrder(int[][] mat) {
-        int m = mat.length;
-        int n = mat[0].length;
-        int[] res = new int[m * n];
-        
-        int idx = 0;
-        
-        for (int d = 0; d < m + n - 1; d++) {
-            int row, col;
-            
-            if (d % 2 == 0) {
-                // Up-right direction
-                row = (d < m) ? d : m - 1;
-                col = d - row;
-                
-                while (row >= 0 && col < n) {
-                    res[idx++] = mat[row][col];
-                    row--;
-                    col++;
+    public int[] findDiagonalOrder(int[][] matrix) {
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+        int[] result = new int[rows * cols];
+        int r = 0;
+        int c = 0;
+
+        for (int i = 0; i < result.length; i++) {
+            result[i] = matrix[r][c];
+            if ((r + c) % 2 == 0) { // Move Up
+                if (c == cols - 1) {
+                    // Reached last column. Now move to below cell in the same column.
+                    // This condition needs to be checked first due to top right corner cell.
+                    r++;
+                } else if (r == 0) {
+                    // Reached first row. Now move to next cell in the same row.
+                    c++;
+                } else {
+                    // Somewhere in middle. Keep going up diagonally.
+                    r--;
+                    c++;
                 }
-            } else {
-                // Down-left direction
-                col = (d < n) ? d : n - 1;
-                row = d - col;
-                
-                while (col >= 0 && row < m) {
-                    res[idx++] = mat[row][col];
-                    row++;
-                    col--;
+            } else { // Move Down
+                if (r == rows - 1) {
+                    // Reached last row. Now move to next cell in same row.
+                    // This condition needs to be checked first due to bottom left corner cell.
+                    c++;
+                } else if (c == 0) {
+                    // Reached first columns. Now move to below cell in the same column.
+                    r++;
+                } else {
+                    // Somewhere in middle. Keep going down diagonally.
+                    r++;
+                    c--;
                 }
             }
         }
-        return res;
+
+        return result;
     }
 }
