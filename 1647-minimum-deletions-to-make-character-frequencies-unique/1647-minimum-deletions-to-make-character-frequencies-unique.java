@@ -1,21 +1,18 @@
-public class Solution {
+class Solution {
     public int minDeletions(String s) {
-        HashMap<Character, Integer> mp = new HashMap<>();
-        int deletions = 0;
-        HashSet<Integer> mySet = new HashSet<>();
-        
-        for (char c : s.toCharArray()) {
-            mp.put(c, cnt.getOrDefault(c, 0) + 1);
+        int freq[]=new int[26];
+        for(int i=0;i<s.length();i++){
+            freq[s.charAt(i)-'a']++;
         }
-        
-        for (int freq : mp.values()) {
-            while (freq > 0 && mySet.contains(freq)) {
-                freq--;
-                deletions++;
+        int res=0;
+        HashSet<Integer> set=new HashSet<>();
+        for(int fre:freq){
+            while(fre>0 && set.contains(fre)){
+                fre--;
+                res++;
             }
-            mySet.add(freq);
+            set.add(fre);
         }
-        
-        return deletions;
+        return res;
     }
 }
