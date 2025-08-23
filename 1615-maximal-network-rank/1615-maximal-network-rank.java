@@ -1,26 +1,26 @@
 class Solution {
     public int maximalNetworkRank(int n, int[][] roads) {
-        int[] degree = new int[n]; 
-        boolean[][] connected = new boolean[n][n]; 
+        int[] degree = new int[n];
+        Set<String> set = new HashSet<>();
 
-        // Step 1: Build degrees and connections
-        for (int[] road : roads) {
-            int a = road[0], b = road[1];
-            degree[a]++;
-            degree[b]++;
-            connected[a][b] = true;
-            connected[b][a] = true;
+        for(int[] road : roads){
+            degree[road[0]]++;
+            degree[road[1]]++;
+
+            set.add(road[0]+","+road[1]);
+            set.add(road[1]+","+road[0]);
         }
 
         int maxRank = 0;
 
-        // Step 2: Try all pairs
-        for (int i = 0; i < n; i++) {
-            for (int j = i + 1; j < n; j++) {
+        for(int i = 0; i < n; i++){
+            for(int j = i + 1; j < n; j++){
                 int rank = degree[i] + degree[j];
-                if (connected[i][j]) {
-                    rank--; // avoid double-counting
+
+                if(set.contains(i+","+j)){
+                    rank--;
                 }
+
                 maxRank = Math.max(maxRank, rank);
             }
         }
@@ -28,3 +28,4 @@ class Solution {
         return maxRank;
     }
 }
+
