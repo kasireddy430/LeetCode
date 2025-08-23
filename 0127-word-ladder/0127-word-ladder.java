@@ -1,34 +1,38 @@
 public class Solution {
     public int ladderLength(String beginWord, String endWord, List<String> wordList) {
-        if (!wordList.contains(endWord)) {
-            return 0;
-        }
+        Map<String, List<String>> adj = new HashMap<>();
 
-        Map<String, List<String>> nei = new HashMap<>();
         wordList.add(beginWord);
-        for (String word : wordList) {
-            for (int j = 0; j < word.length(); j++) {
+        for(String word : wordList){
+            for(int j = 0; j < word.length(); j++){
                 String pattern = word.substring(0, j) + "*" + word.substring(j + 1);
-                nei.computeIfAbsent(pattern, k -> new ArrayList<>()).add(word);
+                adj.computeIfAbsent(pattern, k -> new ArrayList<>()).add(word);
             }
         }
 
-        Set<String> visit = new HashSet<>();
         Queue<String> q = new LinkedList<>();
-        q.offer(beginWord);
+        Set<String> visited = new HashSet<>();
+
+        q.add(beginWord);
+        visited.add(beginWord);
         int res = 1;
-        while (!q.isEmpty()) {
+
+        while(!q.isEmpty()){
             int size = q.size();
-            for (int i = 0; i < size; i++) {
-                String word = q.poll();
-                if (word.equals(endWord)) {
+
+            for(int i = 0; i < size; i++){
+                String w = q.poll();
+
+                if(w.equals(endWord)){
                     return res;
                 }
-                for (int j = 0; j < word.length(); j++) {
-                    String pattern = word.substring(0, j) + "*" + word.substring(j + 1);
-                    for (String neiWord : nei.getOrDefault(pattern, Collections.emptyList())) {
-                        if (!visit.contains(neiWord)) {
-                            visit.add(neiWord);
+
+                for(int j = 0; j < w.length(); j++){
+                    String pattern = w.substring(0, j) + "*" + w.substring(j + 1);
+
+                    for(String neiWord : adj.getOrDefault(pattern, new ArrayList<>())){
+                        if(!visited.contains(neiWord)){
+                            visited.add(neiWord);
                             q.offer(neiWord);
                         }
                     }
@@ -36,6 +40,10 @@ public class Solution {
             }
             res++;
         }
+
         return 0;
     }
 }
+
+//TC: O(n * l ^ 2)
+//SC: O(n * l ^ 2)
