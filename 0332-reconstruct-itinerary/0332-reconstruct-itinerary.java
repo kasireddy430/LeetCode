@@ -1,24 +1,28 @@
-public class Solution {
+//Hierholzer’s algorithm is a classic graph algorithm used to find an Eulerian circuit (or path) in a graph.
+//An Eulerian path is a path that visits every edge in the graph exactly once.
+class Solution {
     public List<String> findItinerary(List<List<String>> tickets) {
-        Map<String, PriorityQueue<String>> adj = new HashMap<>();
-        for (List<String> ticket : tickets) {
-            adj.computeIfAbsent(ticket.get(0),
-            k -> new PriorityQueue<>()).add(ticket.get(1));
-        }
-
+        Map<String, PriorityQueue<String>> map = new HashMap<>();
         LinkedList<String> res = new LinkedList<>();
-        Stack<String> stack = new Stack<>();
-        stack.push("JFK");
 
-        while (!stack.isEmpty()) {
-            String curr = stack.peek();
-            if (!adj.containsKey(curr) || adj.get(curr).isEmpty()) {
-                res.addFirst(stack.pop());
-            } else {
-                stack.push(adj.get(curr).poll());
-            }
+        for(List<String> ticket : tickets){
+            String from = ticket.get(0);
+            String to = ticket.get(1);
+
+            map.computeIfAbsent(from, k -> new PriorityQueue<>()).add(to);
         }
 
+        dfs("JFK", map, res);
         return res;
+    }
+
+    private void dfs(String start,  Map<String, PriorityQueue<String>> map, LinkedList<String> res){
+        PriorityQueue<String> q = map.get(start);
+
+        while(q != null && !q.isEmpty()){
+            dfs(q.poll(), map, res);
+        }
+
+        res.addFirst(start);
     }
 }
