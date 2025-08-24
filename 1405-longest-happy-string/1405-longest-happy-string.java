@@ -1,32 +1,36 @@
 class Solution {
     public String longestDiverseString(int a, int b, int c) {
-        StringBuilder res = new StringBuilder();
-        PriorityQueue<int[]> maxHeap = new PriorityQueue<>((x, y) -> y[0] - x[0]);
+        StringBuilder sb = new StringBuilder();
 
-        if (a > 0) maxHeap.offer(new int[]{a, 'a'});
-        if (b > 0) maxHeap.offer(new int[]{b, 'b'});
-        if (c > 0) maxHeap.offer(new int[]{c, 'c'});
+        PriorityQueue<int[]> q = new PriorityQueue<>((x, y) -> y[0] - x[0]);
 
-        while (!maxHeap.isEmpty()) {
-            int[] first = maxHeap.poll();
-            char char1 = (char) first[1];
+        if(a > 0) q.offer(new int[]{a, 'a'});
+        if(b > 0) q.offer(new int[]{b, 'b'});
+        if(c > 0) q.offer(new int[]{c, 'c'});
 
-            if (res.length() > 1 && res.charAt(res.length() - 1) == char1 && res.charAt(res.length() - 2) == char1) {
-                if (maxHeap.isEmpty()) break;
+        while(!q.isEmpty()){
+            int[] first = q.poll();
+            char char1 = (char)first[1];
 
-                int[] second = maxHeap.poll();
-                char char2 = (char) second[1];
-                res.append(char2);
+            if(sb.length() > 1 && sb.charAt(sb.length() - 1) == char1 && sb.charAt(sb.length() - 2) == char1){
+                if(q.isEmpty()) break;
+                int[] second = q.poll();
+                char char2 = (char)second[1];
+
+                sb.append(char2);
                 second[0]--;
-
-                if (second[0] > 0) maxHeap.offer(second);
-                maxHeap.offer(first);  // Put the first character back in the heap
+                if(second[0] > 0) q.offer(second);
+                q.offer(first);
             } else {
-                res.append(char1);
+                sb.append(char1);
                 first[0]--;
-                if (first[0] > 0) maxHeap.offer(first);
+                if(first[0] > 0) q.offer(first);
             }
         }
-        return res.toString();
+
+        return sb.toString();
     }
 }
+
+//TC: O(n)
+//SC: O(n) contributed by output string
