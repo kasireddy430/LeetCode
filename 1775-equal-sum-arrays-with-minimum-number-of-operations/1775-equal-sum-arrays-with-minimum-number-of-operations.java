@@ -1,32 +1,34 @@
 class Solution {
     public int minOperations(int[] nums1, int[] nums2) {
-        if (nums1.length > 6 * nums2.length || nums2.length > 6 * nums1.length) {
-        return -1;
+        int sum1 = 0;
+        int sum2 = 0;
+        for (int num : nums1) {
+            sum1 += num;
         }
-        int sum1 = Arrays.stream(nums1).sum();
-        int sum2 = Arrays.stream(nums2).sum();
-        int diff = Math.abs(sum1 - sum2);
-        PriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> (b - a));
+        for (int num : nums2) {
+            sum2 += num;
+        }
         if (sum1 > sum2) {
+            return minOperations(nums2, nums1);
+        }
+        int diff = sum2 - sum1;
+        if (diff == 0) return 0;
+        int[] count = new int[6];
         for (int num : nums1) {
-            pq.add(num - 1);
+            count[6 - num]++; // increase smaller array
         }
         for (int num : nums2) {
-            pq.add(6 - num);
+            count[num - 1]++; // decrease
         }
-        } else {
-        for (int num : nums1) {
-            pq.add(6 - num);
+        int ops = 0;
+        for (int g = 5; g >= 1; g--) {
+            while (count[g] > 0) {
+                diff -= g;
+                count[g]--;
+                ops++;
+                if (diff <= 0) return ops;
+            }
         }
-        for (int num : nums2) {
-            pq.add(num - 1);
-        }
-        }
-        int minOps = 0;
-        while (!pq.isEmpty() && diff > 0) {
-        diff -= pq.poll();
-        minOps++;
-        }
-        return diff > 0 ? -1 : minOps;
+        return diff > 0 ? -1 : ops;
     }
 }
