@@ -1,33 +1,27 @@
-class Solution 
-{
-    public int maxLength(List<String> arr) 
-    {
-        int max_len = 0;
-        
-        // [1] we should first throw away all strings with any 
-        //    duplicate characters; strings with all unique  
-        //    characters are the subsets of the alphabet, thus, 
-        //    can be encoded using binary form 
-        List<Integer> unique = new ArrayList<>();
-        for (String s : arr)
-        {
-            Integer bin = 0;
-            for (char ch : s.toCharArray()) bin += 1 << (ch - 'a');
-            if (Integer.bitCount(bin) == s.length()) unique.add(bin);
+class Solution {
+    private static boolean isUnique(String s) {
+        boolean[] seen = new boolean[26];
+        for (char c : s.toCharArray()) {
+            int idx = c - 'a';
+            if (seen[idx])
+                return false;
+            seen[idx] = true;
         }
+        return true;
+    }
 
-        // [2] now start with an empty concatenation and iteratively 
-        //    increase its length by trying to add more strings 
-        ArrayList<Integer> concat = new ArrayList<>(List.of(0));
-        for (Integer u : unique)
-            for (int i = concat.size() - 1; i >= 0; i--)
-                if ((concat.get(i) & u) == 0)
-                {
-                    Integer cc = concat.get(i) | u;
-                    concat.add(cc);
-                    max_len = Math.max(max_len, Integer.bitCount(cc));
-                }
+    public static int findMaxLength(List<String> arr, String s, int index) {
+        if (!isUnique(s)) {
+            return 0;
+        }
+        int max = s.length();
+        for (int i = index; i < arr.size(); i++) {
+            max = Math.max(max, findMaxLength(arr, s + arr.get(i), i + 1));
+        }
+        return max;
+    }
 
-        return max_len;
+    public int maxLength(List<String> arr) {
+        return findMaxLength(arr, "", 0);
     }
 }
