@@ -1,42 +1,42 @@
-class Solution {
+public class Solution {
     public int maxCoins(int[] nums) {
-        
         int n = nums.length;
-        int[] new_nums = new int[n + 2];
-        new_nums[0] = 1;
-        new_nums[n + 1] = 1;
 
-        for (int x = 1; x <= n; x++) {
-            new_nums[x] = nums[x - 1];
+        // Step 1: Create a new array with 1 at both ends to handle boundaries easily
+        int arr[] = new int[n + 2];
+        arr[0] = 1;
+        arr[n + 1] = 1;
+        for (int i = 1; i <= n; i++) arr[i] = nums[i - 1];
+
+        // Step 2: Initialize DP table
+        // dp[i][j] = max coins obtainable by bursting balloons from index i to j (inclusive)
+        int dp[][] = new int[n + 2][n + 2];
+        for (int row[] : dp) Arrays.fill(row, 0);
+
+        // Step 3: Fill DP table in bottom-up manner
+        // i goes from n to 1 to ensure smaller intervals are computed first
+        for (int i = n; i >= 1; i--) {
+            for (int j = 1; j <= n; j++) {
+                if (i > j) continue; // skip invalid intervals
+
+                int maxi = Integer.MIN_VALUE;
+
+                // Step 4: Try bursting each balloon in [i, j] as the last balloon
+                for (int ind = i; ind <= j; ind++) {
+                    // Coins from bursting 'ind' last in this interval
+                    // arr[i-1] and arr[j+1] are the neighbors outside the current interval
+                    int cost = arr[i - 1] * arr[ind] * arr[j + 1]
+                             + dp[i][ind - 1]   // max coins from left subinterval
+                             + dp[ind + 1][j];  // max coins from right subinterval
+
+                    maxi = Math.max(maxi, cost); // take the maximum
+                }
+
+                dp[i][j] = maxi; // store max coins for interval [i,j]
+            }
         }
 
-        int[][] dp = new int[n + 2][n + 2];
-        for (int[] row : dp) {
-            Arrays.fill(row, -1);
-        }
-
-        return func(new_nums, 0, n + 1, dp);
-    }
-
-    public int func(int[] arr, int i, int j, int[][] dp) {
-        if (i + 1 == j) {
-            return 0;
-        }
-
-        if (dp[i][j] != -1) {
-            return dp[i][j];
-        }
-
-        int max = 0;
-
-        for (int k = i + 1; k < j; k++) {
-            int coins = arr[i] * arr[k] * arr[j];
-            int left = func(arr, i, k, dp);
-            int right = func(arr, k, j, dp);
-            max = Math.max(max, coins + left + right);
-        }
-
-        dp[i][j] = max;
-        return max;
+        // Step 5: Return max coins for bursting all balloons
+        return dp[1][n];
     }
 }
