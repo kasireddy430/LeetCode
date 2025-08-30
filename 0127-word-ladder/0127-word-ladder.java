@@ -45,5 +45,5 @@ public class Solution {
     }
 }
 
-//TC: O(n * l ^ 2)
-//SC: O(n * l ^ 2)
+//TC: O(n * l ^ 2). l : length of word, n : no.of words
+//SC: O(n * l)
