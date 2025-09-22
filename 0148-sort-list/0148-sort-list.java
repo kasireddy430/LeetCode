@@ -1,60 +1,49 @@
-class Solution {
-    public ListNode sortList(ListNode head) {
-        if (head == null || head.next == null) {
-            return head; 
-        }
-
-        ListNode middle = getMiddle(head);
-        ListNode nextOfMiddle = middle.next;
-        middle.next = null;
-
-        ListNode left = sortList(head);
-        ListNode right = sortList(nextOfMiddle);
-
-        ListNode sortedList = merge(left, right);
-        return sortedList;
+public class Solution {
+  
+  public ListNode sortList(ListNode head) {
+    if (head == null || head.next == null)
+      return head;
+        
+    // step 1. cut the list to two halves
+    ListNode prev = null, slow = head, fast = head;
+    
+    while (fast != null && fast.next != null) {
+      prev = slow;
+      slow = slow.next;
+      fast = fast.next.next;
     }
-
-    private static ListNode getMiddle(ListNode head) {
-        if (head == null) {
-            return null;
-        }
-
-        ListNode slow = head;
-        ListNode fast = head;
-
-        while (fast.next != null && fast.next.next != null) {
-            slow = slow.next;
-            fast = fast.next.next;
-        } 
-
-        return slow;
+    
+    prev.next = null;
+    
+    // step 2. sort each half
+    ListNode l1 = sortList(head);
+    ListNode l2 = sortList(slow);
+    
+    // step 3. merge l1 and l2
+    return merge(l1, l2);
+  }
+  
+  ListNode merge(ListNode l1, ListNode l2) {
+    ListNode l = new ListNode(0), p = l;
+    
+    while (l1 != null && l2 != null) {
+      if (l1.val < l2.val) {
+        p.next = l1;
+        l1 = l1.next;
+      } else {
+        p.next = l2;
+        l2 = l2.next;
+      }
+      p = p.next;
     }
+    
+    if (l1 != null)
+      p.next = l1;
+    
+    if (l2 != null)
+      p.next = l2;
+    
+    return l.next;
+  }
 
-    private static ListNode merge(ListNode left, ListNode right) {
-        ListNode dummy = new ListNode(0);
-        ListNode tail = dummy;
-
-       
-        while (left != null && right != null) {
-            if (left.val <= right.val) {
-                tail.next = left;
-                left = left.next;
-            } else {
-                tail.next = right;
-                right = right.next;
-            }
-            tail = tail.next;
-        }
-
-        if (left != null) {
-            tail.next = left;
-        }
-
-        if (right != null) {
-            tail.next = right;
-        }
-
-        return dummy.next;
-    }
 }
