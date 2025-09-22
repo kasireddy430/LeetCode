@@ -1,31 +1,43 @@
-// Define the Solution class
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
 class Solution {
-  
-  // Define the isCompleteTree function that takes a TreeNode as input and returns a boolean
-  public boolean isCompleteTree(TreeNode root) {
-    // Check if the root node is null, if so, return true (an empty tree is complete)
-    if (root == null)
-      return true;
+    public boolean isCompleteTree(TreeNode root) {
+        Queue<TreeNode> q = new LinkedList<>();
+        q.offer(root);
 
-    // Create a queue to store the nodes of the tree in level order
-    Queue<TreeNode> q = new LinkedList<>(Arrays.asList(root));
+        boolean end = false;
 
-    // Traverse the tree in level order
-    while (q.peek() != null) {
-      // Remove the first node from the queue
-      TreeNode node = q.poll();
-      // Add the left and right child nodes of the current node to the queue
-      q.offer(node.left);
-      q.offer(node.right);
+        while(!q.isEmpty()){
+            TreeNode cur = q.poll();
+
+            if(cur == null){
+                end = true;
+            } else {
+                if(end){
+                    return false;
+                }
+
+                q.offer(cur.left);
+                q.offer(cur.right);
+            }
+        }
+
+        return true;
     }
-
-    // Remove any remaining null nodes from the end of the queue
-    while (!q.isEmpty() && q.peek() == null)
-      q.poll();
-
-    // Check if there are any remaining nodes in the queue
-    // If so, the tree is not complete, so return false
-    // Otherwise, the tree is complete, so return true
-    return q.isEmpty();
-  }
 }
+
+//TC: O(n)
+//SC: O(n)
