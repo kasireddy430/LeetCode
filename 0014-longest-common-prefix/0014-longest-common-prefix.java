@@ -17,3 +17,6 @@ class Solution {
         return prefix;
     }
 }
+
+//TC: O(n * m)
+//SC: O(1)
