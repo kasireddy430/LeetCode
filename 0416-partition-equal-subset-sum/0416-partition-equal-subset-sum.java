@@ -1,26 +1,28 @@
-class Solution {
+public class Solution {
     public boolean canPartition(int[] nums) {
-        int sum = 0;
-
-        for(int num : nums){
-            sum += num;
-        }
-
-        if(sum % 2 != 0){
+        if (Arrays.stream(nums).sum() % 2 != 0) {
             return false;
         }
 
-        int target = sum/2;
+        Set<Integer> dp = new HashSet<>();
+        dp.add(0);
+        int target = Arrays.stream(nums).sum() / 2;
 
-        boolean[] dp = new boolean[target + 1];
-        dp[0] = true;
-
-        for(int i = 0 ; i < nums.length; i++){
-            for(int j = target; j >= nums[i]; j--){
-                dp[j] = dp[j] || dp[j - nums[i]];
+        for (int i = nums.length - 1; i >= 0; i--) {
+            Set<Integer> nextDP = new HashSet<>();
+            for (int t : dp) {
+                if (t + nums[i] == target) {
+                    return true;
+                }
+                nextDP.add(t + nums[i]);
+                nextDP.add(t);
             }
+            dp = nextDP;
         }
-
-        return dp[target];
+        return false;
     }
 }
+
+
+//TC: O(n * target)
+//SC: O(target)
