@@ -7,3 +7,6 @@ class Solution {
         return nums;
     }
 }
+
+//TC: O(n)
+//SC: O(1)
