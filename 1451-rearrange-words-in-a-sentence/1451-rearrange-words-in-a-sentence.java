@@ -1,22 +1,29 @@
 class Solution {
     public String arrangeWords(String text) {
-        //Array of string's seperated by spaces
         String[] strs = text.split(" ");
-
-        //Update first string to lower case
         strs[0] = strs[0].toLowerCase();
 
-        //sort them based on their lengths
-        Arrays.sort(strs, (a, b) -> a.length() - b.length());
+        int maxLen = 0;
+        for(String str : strs){
+            maxLen = Math.max(maxLen, str.length());
+        }
 
-        //update first charcter of first string to be upper case
-        strs[0] = strs[0].substring(0, 1).toUpperCase() + strs[0].substring(1);
+        List<String>[] bucket = new List[maxLen + 1];
+        for(int i = 0; i <= maxLen; i++){
+            bucket[i] = new ArrayList<>();
+        }
 
-        //return sorted array as string
-        return String.join(" ", strs).trim();
+        for(String str : strs){
+            bucket[str.length()].add(str);
+        }
 
+        List<String> res = new ArrayList<>();
+        for(int i = 0; i <= maxLen; i++){
+            res.addAll(bucket[i]);
+        }
+
+        res.set(0, res.get(0).substring(0, 1).toUpperCase() + res.get(0).substring(1));
+
+        return String.join(" ", res);
     }
 }
-
-//TC:
-//SC: 
