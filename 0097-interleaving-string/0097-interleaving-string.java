@@ -6,21 +6,25 @@ class Solution {
             return false;
         }    
 
-        boolean[][] dp = new boolean[m + 1][n + 1];
-        dp[m][n] = true;
+        boolean[] dp = new boolean[n + 1];
+        dp[n] = true;
 
         for(int i = m; i >= 0; i--){
+            boolean[] nextDp = new boolean[n + 1];
+            if(i == m) nextDp[n] = true;
+
             for(int j = n; j >= 0; j--){
-                if(i < m && (s1.charAt(i) == s3.charAt(i + j))&& dp[i + 1][j]){
-                    dp[i][j] = true;
+                if(i < m && (s1.charAt(i) == s3.charAt(i + j))&& dp[j]){
+                    nextDp[j] = true;
                 }
 
-                if(j < n && (s2.charAt(j) == s3.charAt(i + j)) && dp[i][j + 1]){
-                    dp[i][j] = true;
+                if(j < n && (s2.charAt(j) == s3.charAt(i + j)) && nextDp[j + 1]){
+                    nextDp[j] = true;
                 }                
             }
+            dp = nextDp;
         }
 
-        return dp[0][0];
+        return dp[0];
     }
 }
