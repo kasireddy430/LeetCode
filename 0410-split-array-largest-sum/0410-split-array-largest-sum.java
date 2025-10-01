@@ -1,7 +1,7 @@
 class Solution {
     public int splitArray(int[] nums, int k) {
-        int max = Integer.MIN_VALUE;
         int sum = 0;
+        int max = 0;
 
         for(int num : nums){
             sum += num;
@@ -9,34 +9,37 @@ class Solution {
         }
 
         int left = max, right = sum;
-        int res =0;
+        int res = 0;
 
         while(left <= right){
-            int maxAllowedSum = left + (right - left)/2;
+            int maxSumAllowed = left + (right - left)/2;
 
-            if(computeSubArrays(nums, maxAllowedSum) <= k){
-                right = maxAllowedSum - 1;
-                res = maxAllowedSum;
+            if(computeSubArrays(nums, maxSumAllowed) <= k){
+                right = maxSumAllowed - 1;
+                res = maxSumAllowed;
             } else {
-                left = maxAllowedSum + 1;
+                left = maxSumAllowed + 1;
             }
         }
         return res;
     }
 
-    private int computeSubArrays(int[] nums, int maxAllowedSum){
-        int splits = 0;
+    private int computeSubArrays(int[] nums, int maxSumAllowed){
         int curSum = 0;
+        int splits = 0;
 
         for(int num : nums){
-            if(curSum + num <= maxAllowedSum){
+            if(curSum + num <= maxSumAllowed){
                 curSum += num;
-            } else{
+            } else {
                 curSum = num;
                 splits++;
             }
         }
 
-        return splits+1;
+        return splits + 1;
     }
 }
+
+//TC: O(N log (sumOfArray))
+//SC: O(1)
