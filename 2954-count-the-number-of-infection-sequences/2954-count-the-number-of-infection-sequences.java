@@ -1,51 +1,98 @@
-class Solution {
-    static final int MOD = 1_000_000_007;
+public class Solution {
 
     public int numberOfSequence(int n, int[] sick) {
-        int m = n - sick.length; // total healthy
+        final int MOD = 1_000_000_007;
 
-        // factorials, inverse factorials, and powers of 2
-        long[] fact = new long[n + 1];
-        long[] invFact = new long[n + 1];
-        long[] pow2 = new long[n + 1];
-
-        fact[0] = pow2[0] = 1;
-        for (int i = 1; i <= n; i++) {
-            fact[i] = fact[i - 1] * i % MOD;
-            pow2[i] = pow2[i - 1] * 2 % MOD;
-        }
-        invFact[n] = modPow(fact[n], MOD - 2);
-        for (int i = n; i > 0; i--) {
-            invFact[i - 1] = invFact[i] * i % MOD;
+        // Step 1: mark sick children
+        boolean[] isSick = new boolean[n];
+        for (int i : sick) {
+            isSick[i] = true;
         }
 
-        long ans = fact[m];
-
-        // gap before first sick child
-        ans = ans * invFact[sick[0]] % MOD;
-
-        // gaps between sick children
-        for (int i = 1; i < sick.length; i++) {
-            int gap = sick[i] - sick[i - 1] - 1;
-            ans = ans * invFact[gap] % MOD;
-            if (gap > 0) {
-                ans = ans * pow2[gap - 1] % MOD; // interior gap factor
+        // Step 2: find all consecutive healthy segments (gaps)
+        List<Integer> gaps = new ArrayList<>();
+        int cur = 0;
+        for (int i = 0; i < n; i++) {
+            if (!isSick[i]) {
+                cur++;
+            }
+            // end of a healthy segment
+            if (!isSick[i] && (i == n - 1 || isSick[i + 1])) {
+                gaps.add(cur);
+                cur = 0;
             }
         }
 
-        // gap after last sick child
-        ans = ans * invFact[n - 1 - sick[sick.length - 1]] % MOD;
+        // Step 3: handle leading and trailing gaps separately
+        int leading = 0, trailing = 0;
+        if (sick[0] != 0) {
+            leading = gaps.get(0);
+            gaps.remove(0);
+        }
+        if (sick[sick.length - 1] != n - 1) {
+            trailing = gaps.get(gaps.size() - 1);
+            gaps.remove(gaps.size() - 1);
+        }
 
-        return (int) ans;
+        // Step 4: total permutations of healthy children
+        int totalHealthy = n - sick.length;
+        int ans = factorial(totalHealthy, MOD);
+
+        // Step 5: process interior gaps
+        for (int gapSize : gaps) {
+            ans = multiply(ans, inverseFactorial(gapSize, MOD), MOD);
+            ans = multiply(ans, pow(2, gapSize - 1, MOD), MOD);
+        }
+
+        // Step 6: handle leading and trailing gaps
+        ans = multiply(ans, inverseFactorial(leading, MOD), MOD);
+        ans = multiply(ans, inverseFactorial(trailing, MOD), MOD);
+
+        return ans;
     }
 
-    private long modPow(long base, long exp) {
-        long res = 1;
+    // factorial modulo MOD
+    private int factorial(int n, int MOD) {
+        int result = 1;
+        for (int i = 1; i <= n; i++) {
+            result = multiply(result, i, MOD);
+        }
+        return result;
+    }
+
+    // modular inverse factorial
+    private int inverseFactorial(int n, int MOD) {
+        return modExp(factorial(n, MOD), MOD - 2, MOD);
+    }
+
+    // modular exponentiation
+    private int modExp(int base, int exp, int MOD) {
+        int result = 1;
         while (exp > 0) {
-            if ((exp & 1) == 1) res = res * base % MOD;
-            base = base * base % MOD;
+            if ((exp & 1) == 1) {
+                result = multiply(result, base, MOD);
+            }
+            base = multiply(base, base, MOD);
             exp >>= 1;
         }
-        return res;
+        return result;
+    }
+
+    // modular multiplication
+    private int multiply(int a, int b, int MOD) {
+        return (int) ((1L * a * b) % MOD);
+    }
+
+    // modular power (for 2^(gap-1))
+    private int pow(int base, int exp, int MOD) {
+        int result = 1;
+        while (exp > 0) {
+            if ((exp & 1) == 1) {
+                result = multiply(result, base, MOD);
+            }
+            base = multiply(base, base, MOD);
+            exp >>= 1;
+        }
+        return result;
     }
 }
